@@ -7,6 +7,7 @@ Project-specific guidance for Claude Code when working on this repository.
 **This project is a learning journey.** Claude should act as a senior engineer mentor, not just a code generator.
 
 ### How Claude Should Help
+
 - **Explain the "why"**: Don't just write code—explain the reasoning behind architectural decisions, patterns, and trade-offs
 - **Ask guiding questions**: Before implementing, ask questions that help the developer think through the problem
 - **Teach concepts**: When introducing a new pattern or technique, explain it with context and examples
@@ -15,12 +16,14 @@ Project-specific guidance for Claude Code when working on this repository.
 - **Encourage exploration**: Point to documentation, source code, or resources for deeper learning
 
 ### What Claude Should NOT Do
+
 - Write large amounts of code without explanation
 - Make decisions without discussing trade-offs first
 - Skip over "obvious" concepts without checking understanding
 - Implement features without first agreeing on the approach
 
 ### Learning Goals for This Project
+
 - **Node.js internals**: Deep understanding of built-in modules (`node:util`, `node:test`, `node:fs`, `node:readline`)
 - **TypeScript patterns**: Generics, type guards, discriminated unions, module organization
 - **API design**: Building clean, composable interfaces
@@ -29,6 +32,7 @@ Project-specific guidance for Claude Code when working on this repository.
 - **Open source practices**: Documentation, versioning, publishing
 
 ### Example Interaction Style
+
 Instead of: "Here's the code for the GitHub API client"
 
 Prefer: "Let's design the GitHub API client together. First, what data do we need to fetch? What error cases should we handle? Here's a starting point—what do you think about this approach?"
@@ -44,47 +48,27 @@ Prefer: "Let's design the GitHub API client together. First, what data do we nee
 ```
 good-first-issue/
 ├── packages/
-│   ├── cli/              # CLI application (TypeScript)
-│   ├── web/              # Next.js web application
-│   ├── core/             # Shared business logic & API clients
-│   └── types/            # Shared TypeScript types
-├── data/
-│   └── curated.json      # Curated project list with metadata
-└── docs/                 # Documentation
+│   ├── types/            # Shared TypeScript types (no dependencies)
+│   ├── core/             # Shared business logic & API clients (depends on types)
+│   └── cli/              # CLI application (depends on core, types)
+├── tsconfig.json         # Root TypeScript config with project references
+└── package.json          # Root package.json with monorepo scripts
 ```
 
 ## Tech Stack
 
 ### Philosophy: Minimal Dependencies
+
 This project prioritizes Node.js built-ins over external packages. We use native APIs wherever possible to reduce dependency bloat, improve security, and simplify maintenance.
 
-### CLI
-- **Runtime**: Node.js 22+ (LTS)
-- **Language**: TypeScript (compiled to ESM)
-- **CLI Parsing**: `node:util` parseArgs (built-in)
-- **Testing**: `node:test` + `node:assert` (built-in)
-- **HTTP Client**: Native `fetch` (built-in)
-- **Colors**: ANSI escape codes (no chalk needed)
-- **File System**: `node:fs/promises` (built-in)
-
-### Web Application
-- **Framework**: Next.js 14+ (App Router)
-- **Styling**: Tailwind CSS
-- **Deployment**: Vercel
-
 ### Shared
-- **Package Manager**: pnpm (monorepo)
-- **Build**: Turborepo + tsc
+
+- **Package Manager**: pnpm (monorepo with workspace)
+- **Build**: tsc with project references (handles dependency order automatically)
 - **Linting**: ESLint + Prettier
 
-### Allowed External Packages
-Only add external packages when Node.js built-ins are genuinely insufficient:
-- **TypeScript**: Required for type safety
-- **Next.js**: Required for web app (includes React)
-- **Tailwind CSS**: Required for web styling
-- **ESLint/Prettier**: Required for code quality
-
 ### Forbidden Patterns
+
 - No CLI frameworks (Commander, yargs, oclif) - use `parseArgs`
 - No test frameworks (Jest, Vitest, Mocha) - use `node:test`
 - No HTTP clients (axios, got, undici) - use native `fetch`
@@ -95,19 +79,23 @@ Only add external packages when Node.js built-ins are genuinely insufficient:
 ## Key Features
 
 ### Issue Discovery
+
 - GitHub API integration for searching "good first issue" labels
 - Support for custom labels (help wanted, beginner-friendly, etc.)
 - Organization and repository-specific searches
 - Multi-platform support (GitHub, GitLab future consideration)
 
 ### Quality Scoring
+
 Issues are scored based on:
+
 - **Freshness**: Recently created issues score higher
 - **Engagement**: Maintainer comments, mentorship availability
 - **Clarity**: Well-described issues with clear acceptance criteria
 - **Project Health**: Active maintainers, recent commits, good docs
 
 ### Personalization
+
 - Filter by programming language
 - Filter by project type (library, framework, tool, app)
 - Difficulty levels (beginner, intermediate)
@@ -120,34 +108,40 @@ Issues are scored based on:
 # Install dependencies
 pnpm install
 
-# Development
-pnpm dev           # Run all packages in dev mode
-pnpm dev:cli       # Run CLI in dev mode
-pnpm dev:web       # Run web app in dev mode
+# Building (uses TypeScript project references)
+pnpm build         # Build all packages in dependency order (types → core → cli)
+pnpm typecheck     # Same as build (with project references, incremental so fast)
+pnpm clean         # Remove all dist folders
 
-# Building
-pnpm build         # Build all packages
-pnpm build:cli     # Build CLI only
+# Linting
+pnpm lint          # Lint all packages
+pnpm lint:fix      # Lint and auto-fix
+pnpm format        # Format code with Prettier
+pnpm format:check  # Check formatting without writing
 
 # Testing (uses node:test built-in)
 pnpm test          # Run all tests
 pnpm test:watch    # Run tests in watch mode (node --test --watch)
 
-# Linting
-pnpm lint          # Lint all packages
-pnpm format        # Format code with Prettier
-
 # CLI Usage (development)
 pnpm cli           # Run CLI
 pnpm cli -- --help # CLI help
+```
 
-# Type checking
-pnpm typecheck     # Run tsc --noEmit
+### Package-level commands
+
+Each package has consistent scripts:
+
+```bash
+pnpm build         # Build this package and its dependencies
+pnpm typecheck     # Type check this package
+pnpm clean         # Clean this package's dist folder
 ```
 
 ## API Design
 
 ### GitHub Integration
+
 - Use GitHub REST API v3 for issue search
 - Implement rate limiting with exponential backoff
 - Support GitHub token authentication for higher limits
@@ -155,30 +149,38 @@ pnpm typecheck     # Run tsc --noEmit
 
 ### Data Models
 
+Defined in `@good-first-issue/types`:
+
 ```typescript
-interface GoodFirstIssue {
-  id: string;
-  title: string;
-  url: string;
-  repository: Repository;
-  labels: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  commentsCount: number;
-  qualityScore: number;
-  difficulty?: 'beginner' | 'intermediate';
-  estimatedTime?: string;
+interface Repository {
+  name: string
+  fullName: string
+  description: string
+  language: string
+  stars: number
+  url: string
+  hasGoodDocs: boolean
+  maintainerActive: boolean
 }
 
-interface Repository {
-  name: string;
-  fullName: string;
-  description: string;
-  language: string;
-  stars: number;
-  url: string;
-  hasGoodDocs: boolean;
-  maintainerActive: boolean;
+interface Issue {
+  id: string
+  title: string
+  url: string
+  repository: Repository
+  labels: string[]
+  createdAt: Date
+  updatedAt: Date
+  commentsCount: number
+  qualityScore: number
+  difficulty?: 'beginner' | 'intermediate'
+  estimatedTime?: string
+}
+
+interface SearchOptions {
+  language?: string
+  labels?: string[]
+  limit?: number
 }
 ```
 
@@ -188,14 +190,15 @@ interface Repository {
 - **Progressive disclosure**: Simple by default, powerful when needed
 - **Helpful errors**: Clear messages with suggested fixes
 - **Offline-friendly**: Cache curated list locally, graceful degradation
-- **Interactive mode**: Use inquirer/prompts for guided experience
+- **Interactive mode**: For guided experience
 - **Non-interactive mode**: Support piping and scripting
 
 ## Code Patterns
 
 ### CLI Argument Parsing
+
 ```typescript
-import { parseArgs } from 'node:util';
+import { parseArgs } from 'node:util'
 
 const { values, positionals } = parseArgs({
   options: {
@@ -205,81 +208,62 @@ const { values, positionals } = parseArgs({
     json: { type: 'boolean' },
   },
   allowPositionals: true,
-});
+})
 ```
 
 ### ANSI Colors (No Dependencies)
-```typescript
-// Define color helpers using ANSI escape codes
-const colors = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-} as const;
 
-const c = {
-  bold: (s: string) => `${colors.bold}${s}${colors.reset}`,
-  dim: (s: string) => `${colors.dim}${s}${colors.reset}`,
-  red: (s: string) => `${colors.red}${s}${colors.reset}`,
-  green: (s: string) => `${colors.green}${s}${colors.reset}`,
-  cyan: (s: string) => `${colors.cyan}${s}${colors.reset}`,
-};
-
-// Usage
-console.log(`${c.bold('Issue:')} ${c.cyan(issue.title)}`);
-```
+- Use node styleText
 
 ### Error Handling
+
 ```typescript
 // Use Result type for operations that can fail
-type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E }
 
 // Wrap API calls with proper error handling
 async function fetchIssues(url: string): Promise<Result<Issue[]>> {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url)
     if (!response.ok) {
-      return { ok: false, error: new Error(`API error: ${response.status}`) };
+      return { ok: false, error: new Error(`API error: ${response.status}`) }
     }
-    return { ok: true, value: await response.json() };
+    return { ok: true, value: await response.json() }
   } catch (error) {
-    return { ok: false, error: error as Error };
+    return { ok: false, error: error as Error }
   }
 }
 ```
 
 ### Testing with Node Built-ins
+
 ```typescript
-import { describe, it, beforeEach } from 'node:test';
-import assert from 'node:assert';
+import { describe, it, beforeEach } from 'node:test'
+import assert from 'node:assert'
 
 describe('scoreIssue', () => {
   it('should score fresh issues higher', () => {
-    const fresh = { createdAt: new Date() };
-    const stale = { createdAt: new Date('2020-01-01') };
+    const fresh = { createdAt: new Date() }
+    const stale = { createdAt: new Date('2020-01-01') }
 
-    assert.ok(scoreIssue(fresh) > scoreIssue(stale));
-  });
-});
+    assert.ok(scoreIssue(fresh) > scoreIssue(stale))
+  })
+})
 ```
 
 ### CLI Output Formatting
+
 ```typescript
 // Simple box drawing without dependencies
 function box(content: string, title?: string): string {
-  const lines = content.split('\n');
-  const width = Math.max(...lines.map(l => l.length), title?.length ?? 0) + 4;
+  const lines = content.split('\n')
+  const width = Math.max(...lines.map((l) => l.length), title?.length ?? 0) + 4
   const top = title
     ? `┌─ ${title} ${'─'.repeat(width - title.length - 5)}┐`
-    : `┌${'─'.repeat(width - 2)}┐`;
-  const bottom = `└${'─'.repeat(width - 2)}┘`;
-  const body = lines.map(l => `│ ${l.padEnd(width - 4)} │`).join('\n');
-  return `${top}\n${body}\n${bottom}`;
+    : `┌${'─'.repeat(width - 2)}┐`
+  const bottom = `└${'─'.repeat(width - 2)}┘`
+  const body = lines.map((l) => `│ ${l.padEnd(width - 4)} │`).join('\n')
+  return `${top}\n${body}\n${bottom}`
 }
 ```
 
@@ -288,14 +272,12 @@ function box(content: string, title?: string): string {
 - **Unit tests**: Core business logic, scoring algorithms
 - **Integration tests**: API client with mocked responses
 - **E2E tests**: CLI commands with snapshot testing
-- **Web tests**: Component tests with Testing Library
 
 ## Environment Variables
 
 ```bash
 # .env.local
 GITHUB_TOKEN=           # GitHub personal access token (optional, increases rate limit)
-NEXT_PUBLIC_API_URL=    # API URL for web app
 ```
 
 ## Contributing Guidelines
@@ -309,9 +291,10 @@ NEXT_PUBLIC_API_URL=    # API URL for web app
 ## Quality Checklist
 
 Before merging any feature:
+
+- [ ] Build succeeds (`pnpm build`)
 - [ ] Tests pass (`pnpm test`)
 - [ ] Linting passes (`pnpm lint`)
 - [ ] Types check (`pnpm typecheck`)
 - [ ] CLI works interactively and non-interactively
-- [ ] Web app renders correctly
 - [ ] Documentation updated if needed

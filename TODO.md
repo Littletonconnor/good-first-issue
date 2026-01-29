@@ -7,15 +7,15 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 1: Foundation
 
 ### Project Setup
-- [ ] Initialize pnpm monorepo with Turborepo
-- [ ] Set up TypeScript configuration (strict mode, ESM output)
-- [ ] Configure ESLint + Prettier
-- [ ] Set up `node:test` for testing (no external test runners)
-- [ ] Create shared `packages/types` for TypeScript interfaces
-- [ ] Create shared `packages/core` for business logic
-- [ ] Add simple pre-commit hook (no Husky - use git hooks directly)
+
+- [x] Initialize pnpm monorepo
+- [x] Set up TypeScript configuration (strict mode, ESM output)
+- [x] Configure ESLint + Prettier
+- [x] Create shared `packages/types` for TypeScript interfaces
+- [x] Create shared `packages/core` for business logic
 
 ### Core Library (`packages/core`)
+
 - [ ] Implement GitHub API client using native `fetch`
 - [ ] Add token-based authentication support
 - [ ] Create issue search function with filtering
@@ -29,6 +29,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 2: CLI Application
 
 ### Basic CLI (`packages/cli`)
+
 - [ ] Set up CLI entry point with `node:util` parseArgs
 - [ ] Implement `gfi` base command with help
 - [ ] Add `gfi search` - search for good first issues
@@ -37,6 +38,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Add `gfi open <issue-url>` - open issue in browser (use `open` command)
 
 ### CLI Enhancements
+
 - [ ] Add interactive mode with `node:readline` (no external prompts library)
 - [ ] Implement language filter (`--language`, `-l`)
 - [ ] Implement project filter (`--project`, `-p`)
@@ -47,6 +49,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Box formatting with Unicode box-drawing characters
 
 ### CLI Polish
+
 - [ ] Add shell completions (bash, zsh, fish)
 - [ ] Implement config file support (`~/.gfirc`) with `node:fs`
 - [ ] Add `gfi config` command for settings
@@ -59,6 +62,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 3: Curated Data
 
 ### Project Curation
+
 - [ ] Create `data/curated.json` schema
 - [ ] Add 50+ high-quality beginner-friendly projects
 - [ ] Include metadata: language, type, difficulty, mentorship
@@ -67,9 +71,10 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Build script to validate curated data
 
 ### Discovery Sources
+
 - [ ] Integrate GitHub Explore trending repos
 - [ ] Add support for GitHub Topics (e.g., `good-first-issue`)
-- [ ] Parse awesome-* lists for project discovery
+- [ ] Parse awesome-\* lists for project discovery
 - [ ] Consider CodeTriage integration
 - [ ] Consider Up For Grabs integration
 
@@ -78,6 +83,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 4: Quality & Scoring
 
 ### Issue Quality Algorithm
+
 - [ ] Score based on issue age (prefer fresh)
 - [ ] Score based on description quality (length, formatting)
 - [ ] Score based on label specificity
@@ -87,6 +93,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Add time-to-complete estimation
 
 ### Project Health Metrics
+
 - [ ] Check last commit date
 - [ ] Check maintainer activity
 - [ ] Check documentation quality (README, CONTRIBUTING)
@@ -99,6 +106,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 5: Web Application
 
 ### Web Setup (`packages/web`)
+
 - [ ] Initialize Next.js 14 with App Router
 - [ ] Set up Tailwind CSS
 - [ ] Configure React Query for data fetching
@@ -106,6 +114,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Set up Vercel deployment
 
 ### Web Features
+
 - [ ] Homepage with search and filters
 - [ ] Issue cards with quality indicators
 - [ ] Language filter sidebar
@@ -115,6 +124,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Pagination / infinite scroll
 
 ### Web Enhancements
+
 - [ ] Dark mode support
 - [ ] Mobile responsive design
 - [ ] Share issue links
@@ -128,6 +138,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 6: Personalization
 
 ### User Features (Future)
+
 - [ ] GitHub OAuth login
 - [ ] Save favorite projects
 - [ ] Track contributed issues
@@ -139,6 +150,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - [ ] Skill-based matching
 
 ### Notifications (Future)
+
 - [ ] Email digest (daily/weekly)
 - [ ] Browser push notifications
 - [ ] Slack/Discord integration
@@ -149,18 +161,21 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Phase 7: Advanced Features
 
 ### Multi-Platform Support
+
 - [ ] GitLab API integration
 - [ ] Gitea/Forgejo support
 - [ ] Codeberg support
 - [ ] Unified search across platforms
 
 ### Analytics & Insights
+
 - [ ] Track issue claim rates
 - [ ] Track successful contributions
 - [ ] Surface "most successful" projects for beginners
 - [ ] Community leaderboard (opt-in)
 
 ### AI Enhancements
+
 - [ ] LLM-powered issue summarization
 - [ ] Difficulty classification with AI
 - [ ] Skill requirements extraction
@@ -171,6 +186,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Ideas & Brainstorming
 
 ### Unique Features to Explore
+
 - **Mentorship Matching**: Connect new contributors with experienced maintainers
 - **Issue Walkthroughs**: Step-by-step guides for specific issues
 - **Pair Programming Queue**: Match contributors for pair coding sessions
@@ -183,6 +199,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - **Hacktoberfest Mode**: Special filtering during October
 
 ### Data Sources to Explore
+
 - GitHub Sponsors (support contributors)
 - Open Collective projects
 - NumFOCUS affiliated projects
@@ -192,6 +209,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 - Mozilla projects
 
 ### Potential Partnerships
+
 - GitHub Education
 - Major League Hacking (MLH)
 - Open Source Initiative
@@ -217,22 +235,26 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 ## Milestones
 
 ### v0.1.0 - MVP CLI
+
 - Basic search functionality
 - 20+ curated projects
 - Language filtering
 - Interactive mode
 
 ### v0.2.0 - Quality Scoring
+
 - Issue quality algorithm
 - Project health metrics
 - Improved filtering
 
 ### v0.3.0 - Web Launch
+
 - Public website
 - Search and browse
 - Mobile support
 
 ### v1.0.0 - Full Release
+
 - Stable API
 - 100+ curated projects
 - Personalization features

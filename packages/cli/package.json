@@ -1,0 +1,17 @@
+{
+  "name": "@good-first-issue/cli",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "good-first-issue": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "clean": "tsc --build --clean"
+  },
+  "dependencies": {
+    "@good-first-issue/core": "workspace:*",
+    "@good-first-issue/types": "workspace:*"
+  }
+}
