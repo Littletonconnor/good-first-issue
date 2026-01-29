@@ -48,13 +48,11 @@ Prefer: "Let's design the GitHub API client together. First, what data do we nee
 ```
 good-first-issue/
 ├── packages/
-│   ├── cli/              # CLI application (TypeScript)
-│   ├── web/              # Next.js web application
-│   ├── core/             # Shared business logic & API clients
-│   └── types/            # Shared TypeScript types
-├── data/
-│   └── curated.json      # Curated project list with metadata
-└── docs/                 # Documentation
+│   ├── types/            # Shared TypeScript types (no dependencies)
+│   ├── core/             # Shared business logic & API clients (depends on types)
+│   └── cli/              # CLI application (depends on core, types)
+├── tsconfig.json         # Root TypeScript config with project references
+└── package.json          # Root package.json with monorepo scripts
 ```
 
 ## Tech Stack
@@ -65,8 +63,8 @@ This project prioritizes Node.js built-ins over external packages. We use native
 
 ### Shared
 
-- **Package Manager**: pnpm (monorepo)
-- **Build**: Turborepo + tsc
+- **Package Manager**: pnpm (monorepo with workspace)
+- **Build**: tsc with project references (handles dependency order automatically)
 - **Linting**: ESLint + Prettier
 
 ### Forbidden Patterns
@@ -110,29 +108,34 @@ Issues are scored based on:
 # Install dependencies
 pnpm install
 
-# Development
-pnpm dev           # Run all packages in dev mode
-pnpm dev:cli       # Run CLI in dev mode
-pnpm dev:web       # Run web app in dev mode
+# Building (uses TypeScript project references)
+pnpm build         # Build all packages in dependency order (types → core → cli)
+pnpm typecheck     # Same as build (with project references, incremental so fast)
+pnpm clean         # Remove all dist folders
 
-# Building
-pnpm build         # Build all packages
-pnpm build:cli     # Build CLI only
+# Linting
+pnpm lint          # Lint all packages
+pnpm lint:fix      # Lint and auto-fix
+pnpm format        # Format code with Prettier
+pnpm format:check  # Check formatting without writing
 
 # Testing (uses node:test built-in)
 pnpm test          # Run all tests
 pnpm test:watch    # Run tests in watch mode (node --test --watch)
 
-# Linting
-pnpm lint          # Lint all packages
-pnpm format        # Format code with Prettier
-
 # CLI Usage (development)
 pnpm cli           # Run CLI
 pnpm cli -- --help # CLI help
+```
 
-# Type checking
-pnpm typecheck     # Run tsc --noEmit
+### Package-level commands
+
+Each package has consistent scripts:
+
+```bash
+pnpm build         # Build this package and its dependencies
+pnpm typecheck     # Type check this package
+pnpm clean         # Clean this package's dist folder
 ```
 
 ## API Design
@@ -146,8 +149,21 @@ pnpm typecheck     # Run tsc --noEmit
 
 ### Data Models
 
+Defined in `@good-first-issue/types`:
+
 ```typescript
-interface GoodFirstIssue {
+interface Repository {
+  name: string
+  fullName: string
+  description: string
+  language: string
+  stars: number
+  url: string
+  hasGoodDocs: boolean
+  maintainerActive: boolean
+}
+
+interface Issue {
   id: string
   title: string
   url: string
@@ -161,15 +177,10 @@ interface GoodFirstIssue {
   estimatedTime?: string
 }
 
-interface Repository {
-  name: string
-  fullName: string
-  description: string
-  language: string
-  stars: number
-  url: string
-  hasGoodDocs: boolean
-  maintainerActive: boolean
+interface SearchOptions {
+  language?: string
+  labels?: string[]
+  limit?: number
 }
 ```
 
@@ -261,14 +272,12 @@ function box(content: string, title?: string): string {
 - **Unit tests**: Core business logic, scoring algorithms
 - **Integration tests**: API client with mocked responses
 - **E2E tests**: CLI commands with snapshot testing
-- **Web tests**: Component tests with Testing Library
 
 ## Environment Variables
 
 ```bash
 # .env.local
 GITHUB_TOKEN=           # GitHub personal access token (optional, increases rate limit)
-NEXT_PUBLIC_API_URL=    # API URL for web app
 ```
 
 ## Contributing Guidelines
@@ -283,9 +292,9 @@ NEXT_PUBLIC_API_URL=    # API URL for web app
 
 Before merging any feature:
 
+- [ ] Build succeeds (`pnpm build`)
 - [ ] Tests pass (`pnpm test`)
 - [ ] Linting passes (`pnpm lint`)
 - [ ] Types check (`pnpm typecheck`)
 - [ ] CLI works interactively and non-interactively
-- [ ] Web app renders correctly
 - [ ] Documentation updated if needed

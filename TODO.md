@@ -8,12 +8,11 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 
 ### Project Setup
 
-- [ ] Initialize pnpm monorepo with Turborepo
+- [x] Initialize pnpm monorepo
 - [x] Set up TypeScript configuration (strict mode, ESM output)
 - [x] Configure ESLint + Prettier
-- [ ] Create shared `packages/types` for TypeScript interfaces
-- [ ] Create shared `packages/core` for business logic
-- [ ] Add simple pre-commit hook (no Husky - use git hooks directly)
+- [x] Create shared `packages/types` for TypeScript interfaces
+- [x] Create shared `packages/core` for business logic
 
 ### Core Library (`packages/core`)
 
