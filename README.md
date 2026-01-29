@@ -5,6 +5,7 @@ A modern CLI and web app to discover beginner-friendly open source contribution 
 ## Why?
 
 Finding your first open source contribution is hard. You need to:
+
 - Find a project you care about
 - Find an issue that's actually beginner-friendly
 - Make sure it's not stale or already claimed
