@@ -16,13 +16,49 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 
 ### Core Library (`packages/core`)
 
-- [ ] Implement GitHub API client using native `fetch`
-- [ ] Add token-based authentication support
-- [ ] Create issue search function with filtering
+#### Foundation
+
+- [x] Create `Result<T, E>` type for explicit error handling (`src/result.ts`)
+- [ ] Export Result utilities from package index
+
+#### GitHub API Client (`src/github/`)
+
+Architecture: Type-safe client with specific methods per resource (not generic).
+
+**Types (`src/github/types.ts`)**
+
+- [ ] Define GitHub API response types (issues, repos, users, etc.)
+- [ ] Define search parameter types for each resource
+- [ ] Define error types for API failures (rate limit, auth, not found, etc.)
+
+**Query Builder (`src/github/query-builder.ts`)**
+
+- [ ] Build type-safe query string construction
+- [ ] Support structured parameters (language, labels, etc.)
+- [ ] Provide escape hatch for raw query strings
+
+**Client (`src/github/client.ts`)**
+
+- [ ] Create `GitHubClient` class with token-based auth
+- [ ] `searchIssues()` - search issues and PRs
+- [ ] `searchRepositories()` - search repositories
+- [ ] `searchCode()` - search code
+- [ ] `searchCommits()` - search commits
+- [ ] `searchUsers()` - search users
+- [ ] `searchTopics()` - search topics
+- [ ] `searchLabels()` - search labels (requires repository_id)
+- [ ] Handle rate limiting with exponential backoff
+- [ ] Return `Result<T, E>` from all methods
+
+#### Caching & Performance
+
 - [ ] Implement result caching (`node:fs` file-based)
-- [ ] Add exponential backoff for API failures
+- [ ] Add cache TTL (5 minutes for search results)
+
+#### Business Logic
+
+- [ ] Create issue search function with filtering (uses GitHubClient)
 - [ ] Create quality scoring algorithm
-- [ ] Write unit tests with `node:test` and `node:assert`
 
 ---
 
