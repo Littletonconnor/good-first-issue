@@ -17,10 +17,22 @@ Project-specific guidance for Claude Code when working on this repository.
 
 ### What Claude Should NOT Do
 
+- **Write code for the developer** - the developer writes the code, Claude guides
 - Write large amounts of code without explanation
 - Make decisions without discussing trade-offs first
 - Skip over "obvious" concepts without checking understanding
 - Implement features without first agreeing on the approach
+
+### The Developer Writes, Claude Guides
+
+**The developer should be typing all the code.** Claude's role is to:
+
+- Explain concepts and patterns before the developer implements them
+- Ask questions like "What do you think should happen when X fails?"
+- Point to documentation or examples when introducing new concepts
+- Review code the developer has written and suggest improvements
+- Provide small snippets (1-5 lines) as illustrations, not complete implementations
+- Say "try creating a file at X with a function that does Y" rather than writing it
 
 ### Learning Goals for This Project
 
@@ -60,6 +72,24 @@ good-first-issue/
 ### Philosophy: Minimal Dependencies
 
 This project prioritizes Node.js built-ins over external packages. We use native APIs wherever possible to reduce dependency bloat, improve security, and simplify maintenance.
+
+### Philosophy: Type Safety First
+
+Type safety is a first-class citizen in this project. TypeScript's type system should catch errors at compile time, not runtime.
+
+**Principles:**
+- **Specific over generic**: Prefer specific method signatures over loose `any` or broad union types
+- **Exhaustive checks**: Use discriminated unions and exhaustive switch statements
+- **Result types over exceptions**: Use `Result<T, E>` pattern to make error handling explicit and type-checked
+- **No type assertions**: Avoid `as` casts; if you need them, the types are wrong
+- **Strict mode always**: `strict: true` in tsconfig, no escape hatches
+
+**Patterns we use:**
+- Discriminated unions for state (e.g., `Result<T, E>`)
+- Branded types for IDs and special strings when needed
+- Const assertions for literal types
+- Type guards for runtime validation with type narrowing
+- Generic constraints to ensure type relationships
 
 ### Shared
 
@@ -146,6 +176,37 @@ pnpm clean         # Clean this package's dist folder
 - Implement rate limiting with exponential backoff
 - Support GitHub token authentication for higher limits
 - Cache responses appropriately (5-minute TTL for search results)
+
+### GitHubClient Architecture
+
+The `GitHubClient` class in `packages/core/src/github/client.ts` provides type-safe access to GitHub's Search API.
+
+**Design Decisions:**
+- **Specific methods per resource** (not generic) for maximum type safety
+- **Structured query parameters** by default, with escape hatch for raw queries
+- **Result<T, E> return types** for explicit error handling
+
+**File Structure:**
+```
+packages/core/src/
+├── result.ts              # Result<T, E> type and utilities
+├── github/
+│   ├── client.ts          # GitHubClient class
+│   ├── types.ts           # GitHub API response/request types
+│   └── query-builder.ts   # Type-safe query string construction
+└── index.ts               # Public exports
+```
+
+**Search Methods:**
+- `searchIssues(params)` - Issues and PRs
+- `searchRepositories(params)` - Repositories
+- `searchCode(params)` - Code
+- `searchCommits(params)` - Commits
+- `searchUsers(params)` - Users
+- `searchTopics(params)` - Topics
+- `searchLabels(params)` - Labels (requires repository_id)
+
+All methods return `Promise<Result<SearchResult<T>, GitHubError>>`.
 
 ### Data Models
 
