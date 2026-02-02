@@ -1,8 +1,4 @@
-import type { Issue, SearchOptions } from '@good-first-issue/types'
+export { ok, err, unwrap, unwrapOr, map, flatMap, fromPromise, isOk, isErr } from './result.js'
 
-export async function searchIssues(options: SearchOptions): Promise<Issue[]> {
-  console.log('Searching with options:', options)
-  return []
-}
-
+export { type Result } from './result.js'
 export { type Issue, type SearchOptions } from '@good-first-issue/types'
