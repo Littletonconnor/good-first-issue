@@ -19,7 +19,7 @@ A prioritized roadmap for building a modern "good first issue" discovery tool.
 #### Foundation
 
 - [x] Create `Result<T, E>` type for explicit error handling (`src/result.ts`)
-- [ ] Export Result utilities from package index
+- [x] Export Result utilities from package index
 
 #### GitHub API Client (`src/github/`)
 
@@ -27,15 +27,15 @@ Architecture: Type-safe client with specific methods per resource (not generic).
 
 **Types (`src/github/types.ts`)**
 
-- [ ] Define GitHub API response types (issues, repos, users, etc.)
-- [ ] Define search parameter types for each resource
-- [ ] Define error types for API failures (rate limit, auth, not found, etc.)
+- [x] Define GitHub API response types (`GitHubIssue`, `GitHubLabel`, `GitHubAssignee`, `GitHubPullRequest`)
+- [x] Define search parameter types (`IssueSearchParams`)
+- [x] Define error types (`GitHubError` discriminated union)
 
 **Query Builder (`src/github/query-builder.ts`)**
 
-- [ ] Build type-safe query string construction
-- [ ] Support structured parameters (language, labels, etc.)
-- [ ] Provide escape hatch for raw query strings
+- [x] Build type-safe query string construction (`buildIssueQuery`)
+- [x] Support structured parameters (language, labels, state, repo, org, etc.)
+- [x] Provide escape hatch for raw query strings (`rawQuery` param)
 
 **Client (`src/github/client.ts`)**
 
