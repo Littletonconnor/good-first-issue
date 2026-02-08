@@ -39,7 +39,7 @@ Architecture: Type-safe client with specific methods per resource (not generic).
 
 **Client (`src/github/client.ts`)**
 
-- [ ] Create `GitHubClient` class with token-based auth
+- [x] Create `GitHubClient` class with token-based auth
 - [ ] `searchIssues()` - search issues and PRs
 - [ ] `searchRepositories()` - search repositories
 - [ ] `searchCode()` - search code
