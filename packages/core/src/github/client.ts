@@ -1,4 +1,4 @@
-import { err, fromPromise, ok, Result } from '../result.js'
+import { err, ok, Result } from '../result.js'
 import { GitHubError } from './types.js'
 
 type Config = {
