@@ -1,5 +1,6 @@
 import { err, ok, Result } from '../result.js'
-import { GitHubError } from './types.js'
+import { buildQuery } from './query-builder.js'
+import { GitHubError, GitHubIssue, IssueSearchParams, SearchResponse } from './types.js'
 
 type Config = {
   token?: string
@@ -8,8 +9,21 @@ type Config = {
 export class GithubClient {
   private config: Config
 
-  constructor(config: Config) {
+  private BASE_API = 'https://api.github.com'
+  private SEARCH_ISSUES_API = this.BASE_API + '/search/issues'
+  private SEARCH_REPOSITORIES_API = this.BASE_API + '/search/repositories'
+  private SEARCH_CODE_API = this.BASE_API + '/search/code'
+
+  constructor(config: Config = {}) {
     this.config = config
+  }
+
+  searchIssues(
+    params: IssueSearchParams,
+  ): Promise<Result<SearchResponse<GitHubIssue>, GitHubError>> {
+    const query = buildQuery(params)
+    const endpoint = this.SEARCH_ISSUES_API + `?${query}`
+    return this.fetch<SearchResponse<GitHubIssue>>(endpoint)
   }
 
   private async fetch<T>(url: string): Promise<Result<T, GitHubError>> {
