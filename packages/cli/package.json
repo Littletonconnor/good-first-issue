@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "bin": {
-    "good-first-issue": "./dist/index.js"
+    "good-first-issue": "./bin/good-first-issue.js"
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --build",
-    "clean": "tsc --build --clean"
+    "clean": "tsc --build --clean",
+    "dev": "pnpm build && ./bin/good-first-issue.js",
+    "typecheck": "tsc --build"
   },
   "dependencies": {
     "@good-first-issue/core": "workspace:*",
