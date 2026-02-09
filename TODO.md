@@ -1,297 +1,188 @@
 # TODO - Good First Issue
 
-A prioritized roadmap for building a modern "good first issue" discovery tool.
+Incremental roadmap. Each phase is roughly one session of work.
 
 ---
 
-## Phase 1: Foundation
+## Phase 1: Foundation (Complete)
 
-### Project Setup
-
-- [x] Initialize pnpm monorepo
-- [x] Set up TypeScript configuration (strict mode, ESM output)
+- [x] Initialize pnpm monorepo with TypeScript project references
 - [x] Configure ESLint + Prettier
-- [x] Create shared `packages/types` for TypeScript interfaces
-- [x] Create shared `packages/core` for business logic
-
-### Core Library (`packages/core`)
-
-#### Foundation
-
-- [x] Create `Result<T, E>` type for explicit error handling (`src/result.ts`)
-- [x] Export Result utilities from package index
-
-#### GitHub API Client (`src/github/`)
-
-Architecture: Type-safe client with specific methods per resource (not generic).
-
-**Types (`src/github/types.ts`)**
-
-- [x] Define GitHub API response types (`GitHubIssue`, `GitHubLabel`, `GitHubAssignee`, `GitHubPullRequest`)
-- [x] Define search parameter types (`IssueSearchParams`)
-- [x] Define error types (`GitHubError` discriminated union)
-
-**Query Builder (`src/github/query-builder.ts`)**
-
-- [x] Build type-safe query string construction (`buildIssueQuery`)
-- [x] Support structured parameters (language, labels, state, repo, org, etc.)
-- [x] Provide escape hatch for raw query strings (`rawQuery` param)
-
-**Client (`src/github/client.ts`)**
-
-- [x] Create `GitHubClient` class with token-based auth
-- [ ] `searchIssues()` - search issues and PRs
-- [ ] `searchRepositories()` - search repositories
-- [ ] `searchCode()` - search code
-- [ ] `searchCommits()` - search commits
-- [ ] `searchUsers()` - search users
-- [ ] `searchTopics()` - search topics
-- [ ] `searchLabels()` - search labels (requires repository_id)
-- [ ] Handle rate limiting with exponential backoff
-- [ ] Return `Result<T, E>` from all methods
-
-#### Caching & Performance
-
-- [ ] Implement result caching (`node:fs` file-based)
-- [ ] Add cache TTL (5 minutes for search results)
-
-#### Business Logic
-
-- [ ] Create issue search function with filtering (uses GitHubClient)
-- [ ] Create quality scoring algorithm
+- [x] Create `packages/types` with domain types (Repository, Issue, SearchOptions)
+- [x] Create `packages/core` with `Result<T, E>` type and utilities
+- [x] Define GitHub API types (GitHubIssue, GitHubError discriminated union, IssueSearchParams)
+- [x] Build type-safe query builder (`buildIssueQuery`, `buildQuery` with URLSearchParams)
+- [x] Implement `GithubClient` class with fetch, auth headers, error mapping
+- [x] Implement `searchIssues()` method on GithubClient
+- [x] Set up CLI entry point with bin script and Node version check
+- [x] Set up arg parsing with `node:util` parseArgs
+- [x] Add `--help`, `--verbose`, `--language`, `--limit` flags
+- [x] Add logger with verbose mode support
 
 ---
 
-## Phase 2: CLI Application
+## Phase 2: Core CLI - `find` Command
 
-### Basic CLI (`packages/cli`)
+Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results.
 
-- [ ] Set up CLI entry point with `node:util` parseArgs
-- [ ] Implement `gfi` base command with help
-- [ ] Add `gfi search` - search for good first issues
-- [ ] Add `gfi random` - show a random issue ("I'm Feeling Lucky")
-- [ ] Add `gfi list` - list curated projects
-- [ ] Add `gfi open <issue-url>` - open issue in browser (use `open` command)
+### Subcommand Routing
 
-### CLI Enhancements
+- [x] Parse first positional as subcommand (`find`, `explore`, `lucky`, `open`)
+- [x] Default to `find` when no subcommand is provided
+- [x] Route to appropriate handler function per subcommand
+- [ ] Show help when invalid subcommand is given
 
-- [ ] Add interactive mode with `node:readline` (no external prompts library)
-- [ ] Implement language filter (`--language`, `-l`)
-- [ ] Implement project filter (`--project`, `-p`)
-- [ ] Add output formatting options (`--json`, `--compact`)
-- [ ] Add `--limit` flag for result count
-- [ ] Colorized output with ANSI escape codes (no chalk)
-- [ ] Simple progress indicator with console updates
-- [ ] Box formatting with Unicode box-drawing characters
+### `find` Implementation
 
-### CLI Polish
+- [x] Accept flags: `--language`, `--limit`, `--org`, `--repo`, `--label`, `--sort`
+- [x] Map CLI flags to `IssueSearchParams`
+- [x] Apply default labels when no `--label` is provided (`good first issue`, `help wanted`, `beginner`, `easy`, `starter`, `first-timers-only`, `contributions welcome`, `up-for-grabs`)
+- [x] Call `GithubClient.searchIssues()` with mapped params
+- [x] Handle `Result` — print results on success, print error message on failure
+- [ ] Filter out PRs from results (add `is: 'issue'` to default params)
+- [ ] Add `--no-score` flag to skip quality scoring and return raw results
 
-- [ ] Add shell completions (bash, zsh, fish)
-- [ ] Implement config file support (`~/.gfirc`) with `node:fs`
-- [ ] Add `gfi config` command for settings
-- [ ] Create man page / detailed help
-- [ ] Package for npm publishing
-- [ ] Version check using native fetch to npm registry
+### Output Formatting
 
----
+- [ ] Design and implement human-readable issue output (repo, title, labels, comments, age, URL)
+- [ ] Add ANSI color output using `node:util` styleText (no chalk)
+- [ ] Add relative time formatting ("2 days ago", "3 weeks ago")
+- [ ] Add star count formatting (e.g., "124k")
+- [ ] Add `--json` flag for machine-readable output
+- [ ] Add result count summary line at the bottom
 
-## Phase 3: Curated Data
+### Help Text
 
-### Project Curation
-
-- [ ] Create `data/curated.json` schema
-- [ ] Add 50+ high-quality beginner-friendly projects
-- [ ] Include metadata: language, type, difficulty, mentorship
-- [ ] Add project health indicators
-- [ ] Create automated staleness detection
-- [ ] Build script to validate curated data
-
-### Discovery Sources
-
-- [ ] Integrate GitHub Explore trending repos
-- [ ] Add support for GitHub Topics (e.g., `good-first-issue`)
-- [ ] Parse awesome-\* lists for project discovery
-- [ ] Consider CodeTriage integration
-- [ ] Consider Up For Grabs integration
+- [ ] Rewrite help message for `good-first-issue` (replace placeholder curly content)
+- [ ] Add per-subcommand help (`good-first-issue find --help`)
 
 ---
 
-## Phase 4: Quality & Scoring
+## Phase 3: Smart Defaults
 
-### Issue Quality Algorithm
+Make the tool intelligent with zero configuration.
 
-- [ ] Score based on issue age (prefer fresh)
-- [ ] Score based on description quality (length, formatting)
-- [ ] Score based on label specificity
-- [ ] Score based on maintainer response time
-- [ ] Score based on project activity
-- [ ] Add difficulty estimation heuristics
-- [ ] Add time-to-complete estimation
+### Language Auto-Detection
 
-### Project Health Metrics
+- [ ] Detect language from current working directory
+- [ ] Support: `package.json` (TS/JS), `Cargo.toml` (Rust), `go.mod` (Go), `pyproject.toml`/`requirements.txt` (Python), `Gemfile` (Ruby), `pom.xml`/`build.gradle` (Java), `*.csproj` (C#), `mix.exs` (Elixir), `Package.swift` (Swift)
+- [ ] Fall back to all languages when no project files are found
 
-- [ ] Check last commit date
-- [ ] Check maintainer activity
-- [ ] Check documentation quality (README, CONTRIBUTING)
-- [ ] Check issue response rate
-- [ ] Check PR merge time
-- [ ] Generate overall health score
+### Default Label Expansion
+
+- [ ] Search across multiple label variations in a single query
+- [ ] Ensure unassigned filter is applied by default (`no:assignee`)
+
+### GitHub Token Support
+
+- [ ] Read `GITHUB_TOKEN` from environment
+- [ ] Pass token to GithubClient for higher rate limits
+- [ ] Show helpful message when rate limited without a token
 
 ---
 
-## Phase 5: Web Application
+## Phase 4: Quality Scoring
 
-### Web Setup (`packages/web`)
+Rank issues by how likely they are to be a good contributor experience.
 
-- [ ] Initialize Next.js 14 with App Router
-- [ ] Set up Tailwind CSS
-- [ ] Configure React Query for data fetching
-- [ ] Create API routes for issue search
-- [ ] Set up Vercel deployment
+### Scoring Algorithm
 
-### Web Features
+- [ ] Create `scoreIssue()` function in `packages/core`
+- [ ] Score freshness — recently created issues score higher
+- [ ] Score description quality — longer, well-formatted descriptions score higher
+- [ ] Score engagement — maintainer comments indicate active shepherding
+- [ ] Score unassigned status — unassigned issues preferred
+- [ ] Penalize staleness — issues open for 6+ months with no activity score lower
+- [ ] Normalize scores to 0-100 scale
 
-- [ ] Homepage with search and filters
+### Repo Health Signals
+
+- [ ] Check last commit date via GitHub API
+- [ ] Check for CONTRIBUTING.md presence
+- [ ] Check recent release activity
+- [ ] Factor repo health into issue score
+
+### CLI Integration
+
+- [ ] Sort by quality score by default (`--sort quality`)
+- [ ] Support `--sort newest` and `--sort comments` alternatives
+- [ ] Show score in `--verbose` mode with per-signal breakdown
+
+---
+
+## Phase 5: Additional Commands
+
+### `lucky`
+
+- [ ] Implement `lucky` subcommand
+- [ ] Run `find` internally, return top-scored result
+- [ ] Accept same filter flags as `find` (`--language`, `--org`, `--repo`)
+- [ ] Print single issue with full detail
+
+### `open`
+
+- [ ] Implement `open` subcommand
+- [ ] Store last search results (in-memory or temp file)
+- [ ] Accept a number (1-indexed) to open from last results
+- [ ] Open URL in default browser using platform-appropriate command (`open` on macOS, `xdg-open` on Linux)
+
+### `explore`
+
+- [ ] Implement `explore` subcommand
+- [ ] Use `searchRepositories` on GithubClient (implement the method)
+- [ ] Filter for repos with good-first-issue labels, recent activity, CONTRIBUTING.md
+- [ ] Accept `--language`, `--topic`, `--limit` flags
+- [ ] Display repo-level info (name, description, stars, language, issue count)
+
+---
+
+## Phase 6: Polish
+
+### Error Handling & Edge Cases
+
+- [ ] Graceful handling when no results found
+- [ ] Helpful message when rate limited (suggest adding GITHUB_TOKEN)
+- [ ] Handle network errors with clear messages
+- [ ] Validate flag values (e.g., `--limit` must be a number)
+
+### Output Polish
+
+- [ ] Box drawing for detailed single-issue view (`lucky`, `open`)
+- [ ] Compact vs detailed output modes
+- [ ] Pagination hint ("Showing 10 of 342 results. Use --limit to see more.")
+
+### Developer Experience
+
+- [ ] Add `--version` flag
+- [ ] Add shell completions (bash, zsh)
+- [ ] Prepare for npm publishing (package.json metadata, bin config)
+
+---
+
+## Future Ideas
+
+These are not prioritized. Pick them up when the core is solid.
+
+### Caching & Performance
+- [ ] File-based result caching with 5-minute TTL
+- [ ] Rate limiting with exponential backoff in GithubClient
+
+### Additional GitHub Search Methods
+- [ ] `searchRepositories()` on GithubClient
+- [ ] `searchCode()` on GithubClient
+- [ ] `searchUsers()` on GithubClient
+
+### Web Application
+- [ ] `packages/web` with Next.js
+- [ ] Search UI with filters
 - [ ] Issue cards with quality indicators
-- [ ] Language filter sidebar
-- [ ] Project type filter
-- [ ] Difficulty filter
-- [ ] Sort options (newest, quality score, stars)
-- [ ] Pagination / infinite scroll
 
-### Web Enhancements
-
-- [ ] Dark mode support
-- [ ] Mobile responsive design
-- [ ] Share issue links
-- [ ] "Copy to clipboard" for issue URLs
-- [ ] Keyboard navigation
-- [ ] RSS feed for new issues
-- [ ] Weekly digest email signup
-
----
-
-## Phase 6: Personalization
-
-### User Features (Future)
-
-- [ ] GitHub OAuth login
+### Personalization
+- [ ] GitHub OAuth for personalized recommendations
+- [ ] Recommendations based on starred repos and contribution history
 - [ ] Save favorite projects
-- [ ] Track contributed issues
-- [ ] Personalized recommendations based on:
-  - Starred repositories
-  - Primary languages
-  - Contribution history
-- [ ] "Issues like ones you've done" feature
-- [ ] Skill-based matching
 
-### Notifications (Future)
-
-- [ ] Email digest (daily/weekly)
-- [ ] Browser push notifications
-- [ ] Slack/Discord integration
-- [ ] GitHub Actions for team notifications
-
----
-
-## Phase 7: Advanced Features
-
-### Multi-Platform Support
-
+### Multi-Platform
 - [ ] GitLab API integration
 - [ ] Gitea/Forgejo support
-- [ ] Codeberg support
-- [ ] Unified search across platforms
-
-### Analytics & Insights
-
-- [ ] Track issue claim rates
-- [ ] Track successful contributions
-- [ ] Surface "most successful" projects for beginners
-- [ ] Community leaderboard (opt-in)
-
-### AI Enhancements
-
-- [ ] LLM-powered issue summarization
-- [ ] Difficulty classification with AI
-- [ ] Skill requirements extraction
-- [ ] "Similar issues" recommendations
-
----
-
-## Ideas & Brainstorming
-
-### Unique Features to Explore
-
-- **Mentorship Matching**: Connect new contributors with experienced maintainers
-- **Issue Walkthroughs**: Step-by-step guides for specific issues
-- **Pair Programming Queue**: Match contributors for pair coding sessions
-- **Learning Paths**: Curated sequences of progressively harder issues
-- **"First PR" Celebrations**: Social sharing when someone completes their first contribution
-- **Project Office Hours**: Show when maintainers are available for questions
-- **Issue Previews**: Show relevant code snippets for each issue
-- **Contribution Streaks**: Gamification to encourage regular contributions
-- **Team Challenges**: Organizations can set contribution goals
-- **Hacktoberfest Mode**: Special filtering during October
-
-### Data Sources to Explore
-
-- GitHub Sponsors (support contributors)
-- Open Collective projects
-- NumFOCUS affiliated projects
-- Apache Foundation projects
-- Linux Foundation projects
-- CNCF projects
-- Mozilla projects
-
-### Potential Partnerships
-
-- GitHub Education
-- Major League Hacking (MLH)
-- Open Source Initiative
-- Digital Ocean (Hacktoberfest)
-- Dev.to / Hashnode communities
-
----
-
-## Technical Debt & Maintenance
-
-- [ ] Set up GitHub Actions CI/CD
-- [ ] Add Dependabot for dependency updates
-- [ ] Create release automation
-- [ ] Write comprehensive README
-- [ ] Add CONTRIBUTING.md guide
-- [ ] Create issue templates
-- [ ] Add code coverage reporting
-- [ ] Set up error monitoring (Sentry)
-- [ ] Performance monitoring for web app
-
----
-
-## Milestones
-
-### v0.1.0 - MVP CLI
-
-- Basic search functionality
-- 20+ curated projects
-- Language filtering
-- Interactive mode
-
-### v0.2.0 - Quality Scoring
-
-- Issue quality algorithm
-- Project health metrics
-- Improved filtering
-
-### v0.3.0 - Web Launch
-
-- Public website
-- Search and browse
-- Mobile support
-
-### v1.0.0 - Full Release
-
-- Stable API
-- 100+ curated projects
-- Personalization features
-- Multi-platform support
+- [ ] Unified cross-platform search
