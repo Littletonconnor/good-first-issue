@@ -30,17 +30,17 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 - [x] Parse first positional as subcommand (`find`, `explore`, `lucky`, `open`)
 - [x] Default to `find` when no subcommand is provided
 - [x] Route to appropriate handler function per subcommand
-- [ ] Show help when invalid subcommand is given
+- [x] Show help when invalid subcommand is given
 
 ### `find` Implementation
 
 - [x] Accept flags: `--language`, `--limit`, `--org`, `--repo`, `--label`, `--sort`
 - [x] Map CLI flags to `IssueSearchParams`
-- [x] Apply default labels when no `--label` is provided (`good first issue`, `help wanted`, `beginner`, `easy`, `starter`, `first-timers-only`, `contributions welcome`, `up-for-grabs`)
+- [x] Apply default label (`good first issue`) when no `--label` is provided
 - [x] Call `GithubClient.searchIssues()` with mapped params
 - [x] Handle `Result` — print results on success, print error message on failure
-- [ ] Filter out PRs from results (add `is: 'issue'` to default params)
-- [ ] Add `--no-score` flag to skip quality scoring and return raw results
+- [x] Filter out PRs from results (add `is: 'issue'` to default params)
+- [x] Surface detailed GitHub API error messages (read `errors[0].message` from response)
 
 ### Output Formatting
 
@@ -70,13 +70,13 @@ Make the tool intelligent with zero configuration.
 
 ### Default Label Expansion
 
-- [ ] Search across multiple label variations in a single query
+- [ ] Search across multiple label variations (requires multiple API calls + merge, GitHub doesn't support OR with qualifiers)
 - [ ] Ensure unassigned filter is applied by default (`no:assignee`)
 
 ### GitHub Token Support
 
-- [ ] Read `GITHUB_TOKEN` from environment
-- [ ] Pass token to GithubClient for higher rate limits
+- [x] Read `GITHUB_TOKEN` from environment
+- [x] Pass token to GithubClient for higher rate limits
 - [ ] Show helpful message when rate limited without a token
 
 ---
@@ -107,6 +107,7 @@ Rank issues by how likely they are to be a good contributor experience.
 - [ ] Sort by quality score by default (`--sort quality`)
 - [ ] Support `--sort newest` and `--sort comments` alternatives
 - [ ] Show score in `--verbose` mode with per-signal breakdown
+- [ ] Add `--no-score` flag to skip quality scoring and return raw results
 
 ---
 
@@ -164,25 +165,30 @@ Rank issues by how likely they are to be a good contributor experience.
 These are not prioritized. Pick them up when the core is solid.
 
 ### Caching & Performance
+
 - [ ] File-based result caching with 5-minute TTL
 - [ ] Rate limiting with exponential backoff in GithubClient
 
 ### Additional GitHub Search Methods
+
 - [ ] `searchRepositories()` on GithubClient
 - [ ] `searchCode()` on GithubClient
 - [ ] `searchUsers()` on GithubClient
 
 ### Web Application
+
 - [ ] `packages/web` with Next.js
 - [ ] Search UI with filters
 - [ ] Issue cards with quality indicators
 
 ### Personalization
+
 - [ ] GitHub OAuth for personalized recommendations
 - [ ] Recommendations based on starred repos and contribution history
 - [ ] Save favorite projects
 
 ### Multi-Platform
+
 - [ ] GitLab API integration
 - [ ] Gitea/Forgejo support
 - [ ] Unified cross-platform search
