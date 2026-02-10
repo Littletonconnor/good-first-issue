@@ -19,6 +19,10 @@ export function cli() {
         type: 'string',
         short: 'l',
       },
+      labels: {
+        type: 'string',
+        multiple: true,
+      },
       org: {
         type: 'string',
         short: 'o',

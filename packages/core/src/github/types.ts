@@ -30,6 +30,12 @@ export type GitHubIssue = {
   pull_request?: GitHubPullRequest
 }
 
+export type GithubRepository = {
+  stargazers_count: number
+  language: string
+  description: string
+}
+
 export type GitHubIssueState = 'open' | 'closed'
 
 export type GitHubAssignee = {
@@ -60,6 +66,11 @@ export type IssueSearchParams = {
   rawQuery?: string
   noAssignee?: boolean
   is?: 'issue' | 'pr'
+}
+
+export type RepoSearchParams = {
+  owner: string
+  repo: string
 }
 
 // ===================================================

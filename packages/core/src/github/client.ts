@@ -1,6 +1,14 @@
+import { logger } from '../logger/index.js'
 import { err, ok, Result } from '../result.js'
 import { buildQuery } from './query-builder.js'
-import { GitHubError, GitHubIssue, IssueSearchParams, SearchResponse } from './types.js'
+import {
+  GitHubError,
+  GitHubIssue,
+  GithubRepository,
+  IssueSearchParams,
+  RepoSearchParams,
+  SearchResponse,
+} from './types.js'
 
 type Config = {
   token?: string
@@ -26,7 +34,15 @@ export class GithubClient {
     return this.fetch<SearchResponse<GitHubIssue>>(endpoint)
   }
 
+  searchRepositories(
+    params: RepoSearchParams,
+  ): Promise<Result<SearchResponse<GithubRepository>, GitHubError>> {
+    const endpoint = this.BASE_API + '/repos' + `/${params.owner}/${params.repo}`
+    return this.fetch<SearchResponse<GithubRepository>>(endpoint)
+  }
+
   private async fetch<T>(url: string): Promise<Result<T, GitHubError>> {
+    logger().verbose('request', url)
     try {
       const response = await fetch(url, {
         headers: this.headers,
@@ -52,7 +68,8 @@ export class GithubClient {
 
   private async errorKind(response: Response): Promise<Result<never, GitHubError>> {
     const body = await response.json().catch(() => null)
-    const message = body?.message ?? `HTTP ${response.status}`
+    const detail = body?.errors?.[0]?.message
+    const message = detail ?? body?.message ?? `HTTP ${response.status}`
 
     if (response.status === 401) {
       return err({ kind: 'bad_auth', message })
