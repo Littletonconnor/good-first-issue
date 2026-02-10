@@ -1,7 +1,20 @@
 import { logger, setVerbose } from '@good-first-issue/core'
-import { cli } from './parser.js'
-import { printHelpMessage } from './help.js'
 import { find } from './commands/find/index.js'
+import {
+  printExploreHelp,
+  printFindHelp,
+  printHelpMessage,
+  printLuckyHelp,
+  printOpenHelp,
+} from './help.js'
+import { cli } from './parser.js'
+
+const subcommandHelp: Record<string, () => void> = {
+  find: printFindHelp,
+  explore: printExploreHelp,
+  lucky: printLuckyHelp,
+  open: printOpenHelp,
+}
 
 export async function main(): Promise<void> {
   try {
@@ -10,21 +23,29 @@ export async function main(): Promise<void> {
       setVerbose(true)
     }
 
+    const command = positionals[0] ?? 'find'
+
     if (cliFlags.help) {
-      printHelpMessage()
+      const helpFn = subcommandHelp[command]
+      if (helpFn && positionals.length > 0) {
+        helpFn()
+      } else {
+        printHelpMessage()
+      }
       process.exit(0)
     }
 
-    const command = positionals[0] ?? 'find'
     if (command === 'find') {
       await find(cliFlags)
-      // Do something
     } else if (command === 'lucky') {
-      // Do something
+      // TODO: implement lucky command
     } else if (command === 'open') {
-      // Do something
+      // TODO: implement open command
+    } else if (command === 'explore') {
+      // TODO: implement explore command
     } else {
-      logger().error('Subcommand not found. ')
+      printHelpMessage()
+      process.exit(1)
     }
   } catch (error) {
     logger().error(
