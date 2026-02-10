@@ -26,19 +26,15 @@ export class GithubClient {
     this.config = config
   }
 
-  searchIssues(
-    params: IssueSearchParams,
-  ): Promise<Result<SearchResponse<GitHubIssue>, GitHubError>> {
+  getIssues(params: IssueSearchParams): Promise<Result<SearchResponse<GitHubIssue>, GitHubError>> {
     const query = buildQuery(params)
     const endpoint = this.SEARCH_ISSUES_API + `?${query}`
     return this.fetch<SearchResponse<GitHubIssue>>(endpoint)
   }
 
-  searchRepositories(
-    params: RepoSearchParams,
-  ): Promise<Result<SearchResponse<GithubRepository>, GitHubError>> {
+  getRepository(params: RepoSearchParams): Promise<Result<GithubRepository, GitHubError>> {
     const endpoint = this.BASE_API + '/repos' + `/${params.owner}/${params.repo}`
-    return this.fetch<SearchResponse<GithubRepository>>(endpoint)
+    return this.fetch<GithubRepository>(endpoint)
   }
 
   private async fetch<T>(url: string): Promise<Result<T, GitHubError>> {
