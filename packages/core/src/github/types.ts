@@ -32,6 +32,7 @@ export type GitHubIssue = {
 
 export type GithubRepository = {
   stargazers_count: number
+  fill_name: string
   language: string
   description: string
 }

@@ -1,4 +1,5 @@
-import { GithubClient, IssueSearchParams } from '@good-first-issue/core'
+import { GithubClient, GitHubIssue, IssueSearchParams, logger } from '@good-first-issue/core'
+import { formatTable } from '../../formatter.js'
 import { CliFlags } from '../../parser.js'
 
 const defaultLabels = [
@@ -24,12 +25,37 @@ export async function find(cliFlags: CliFlags) {
   if (cliFlags.limit) searchParams.perPage = Number(cliFlags.limit)
 
   const client = new GithubClient({ token: process.env.GITHUB_TOKEN })
-  console.log('searchParams', searchParams)
-  const result = await client.searchIssues(searchParams)
+  const response = await client.getIssues(searchParams)
 
-  if (result.ok) {
-    console.log(result.value)
+  if (response.ok) {
+    const repoMap = await fetchRepoDetails(client, response.value.items)
+    console.log(formatTable(response.value.items, repoMap))
   } else {
-    console.log(result.error)
+    logger().error(response.error.kind)
   }
+}
+
+async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
+  const repoKeys = new Set(items.map(getRepoName))
+  const repoResults = await Promise.all(
+    [...repoKeys].map((key) => {
+      const [owner, repo] = key.split('/')
+      return client.getRepository({ owner, repo })
+    }),
+  )
+
+  const repoMap = new Map()
+  const keys = [...repoKeys]
+  for (let i = 0; i < keys.length; i++) {
+    const res = repoResults[i]
+    if (res.ok) {
+      repoMap.set(keys[i], res.value)
+    }
+  }
+
+  return repoMap
+}
+
+function getRepoName(issue: GitHubIssue) {
+  return issue.repository_url.split('/').slice(-2).join('/')
 }

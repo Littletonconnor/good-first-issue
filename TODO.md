@@ -44,17 +44,24 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 
 ### Output Formatting
 
-- [ ] Design and implement human-readable issue output (repo, title, labels, comments, age, URL)
+- [x] Design and implement human-readable issue output (box-drawn table with repo, language, stars, title, age, comments)
+- [x] Add relative time formatting ("2d ago", "3w ago")
+- [x] Add star count formatting (e.g., "124k")
+- [x] Add result count summary line at the bottom
+- [x] Fetch repo details (stars, language) via `getRepository` with parallel `Promise.all`
+- [x] Handle CJK/double-width characters in table column alignment
 - [ ] Add ANSI color output using `node:util` styleText (no chalk)
-- [ ] Add relative time formatting ("2 days ago", "3 weeks ago")
-- [ ] Add star count formatting (e.g., "124k")
 - [ ] Add `--json` flag for machine-readable output
-- [ ] Add result count summary line at the bottom
 
 ### Help Text
 
-- [ ] Rewrite help message for `good-first-issue` (replace placeholder curly content)
-- [ ] Add per-subcommand help (`good-first-issue find --help`)
+- [x] Rewrite help message for `good-first-issue`
+- [x] Add per-subcommand help (`good-first-issue find --help`, `explore --help`, etc.)
+
+### Verbose Logging
+
+- [ ] Add verbose logging throughout CLI (search params, API URLs, timing, repo fetch details)
+- [ ] Ensure `--verbose` / `-v` surfaces useful debug info for all commands
 
 ---
 
@@ -171,7 +178,8 @@ These are not prioritized. Pick them up when the core is solid.
 
 ### Additional GitHub Search Methods
 
-- [ ] `searchRepositories()` on GithubClient
+- [x] `getRepository()` on GithubClient (single repo fetch)
+- [ ] `searchRepositories()` on GithubClient (search endpoint)
 - [ ] `searchCode()` on GithubClient
 - [ ] `searchUsers()` on GithubClient
 

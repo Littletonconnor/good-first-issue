@@ -4,5 +4,5 @@ export { ok, err, unwrap, unwrapOr, map, flatMap, fromPromise, isOk, isErr } fro
 export { setVerbose, isVerbose, logger } from './logger/index.js'
 
 export { type Result } from './result.js'
-export { type IssueSearchParams } from './github/types.js'
+export { type IssueSearchParams, type GitHubIssue, type GithubRepository } from './github/types.js'
 export { type Issue, type SearchOptions } from '@good-first-issue/types'
