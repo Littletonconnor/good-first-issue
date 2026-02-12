@@ -98,3 +98,10 @@ Examples:
 `
   console.log(message)
 }
+
+export const subcommandHelp: Record<string, () => void> = {
+  find: printFindHelp,
+  explore: printExploreHelp,
+  lucky: printLuckyHelp,
+  open: printOpenHelp,
+}

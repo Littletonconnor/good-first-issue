@@ -1,4 +1,5 @@
 import { GitHubIssue, GithubRepository } from '@good-first-issue/core'
+import { styleText } from 'node:util'
 
 const COL = {
   issue: 6,
@@ -16,39 +17,36 @@ export function formatTable(issues: GitHubIssue[], repoMap: Map<string, GithubRe
     return formatIssueRow(issue, repoMap.get(key))
   })
 
-  return [
-    topBorder(),
-    headerRow(),
-    separator(),
-    ...rows,
-    bottomBorder(),
-    '',
+  const disclosure = styleText(
+    'dim',
     `Showing ${issues.length} issues. Run good-first-issue open <n> to open in browser.`,
-  ].join('\n')
+  )
+
+  return [topBorder(), headerRow(), separator(), ...rows, bottomBorder(), '', disclosure].join('\n')
 }
 
 function formatIssueRow(issue: GitHubIssue, repo?: GithubRepository): string {
   const repoName = issue.repository_url.split('/').slice(-2).join('/')
   return row([
-    padEnd(truncate(repoName, COL.repo), COL.repo),
-    padEnd(sliceWidth(repo?.language ?? '-', COL.language), COL.language),
+    styleText('cyan', padEnd(truncate(repoName, COL.repo), COL.repo)),
+    styleText('dim', padEnd(sliceWidth(repo?.language ?? '-', COL.language), COL.language)),
     padStart(formatStars(repo?.stargazers_count ?? 0), COL.stars),
-    padStart(`#${issue.number}`, COL.issue),
+    styleText('dim', padStart(`#${issue.number}`, COL.issue)),
     padEnd(truncate(issue.title, COL.title), COL.title),
-    padStart(formatAge(issue.created_at), COL.age),
+    ageColor(issue.created_at, padStart(formatAge(issue.created_at), COL.age)),
     padStart(String(issue.comments), COL.comments),
   ])
 }
 
 function headerRow(): string {
   return row([
-    padEnd('Repo', COL.repo),
-    padEnd('Language', COL.language),
-    padStart('Stars', COL.stars),
-    padStart('#', COL.issue),
-    padEnd('Title', COL.title),
-    padStart('Age', COL.age),
-    padStart('Comments', COL.comments),
+    styleText('bold', padEnd('Repo', COL.repo)),
+    styleText('bold', padEnd('Language', COL.language)),
+    styleText('bold', padStart('Stars', COL.stars)),
+    styleText('bold', padStart('#', COL.issue)),
+    styleText('bold', padEnd('Title', COL.title)),
+    styleText('bold', padStart('Age', COL.age)),
+    styleText('bold', padStart('Comments', COL.comments)),
   ])
 }
 
@@ -163,4 +161,18 @@ function truncate(str: string, maxWidth: number): string {
   if (displayWidth(str) <= maxWidth) return str
   const truncated = sliceWidth(str, maxWidth - 3)
   return truncated + '...'
+}
+
+function ageColor(dateString: string, text: string): string {
+  const elapsed = Date.now() - new Date(dateString).getTime()
+  const ONE_WEEK = 7 * 24 * 60 * 60 * 1000
+  const EIGHT_WEEKS = ONE_WEEK * 8
+
+  if (elapsed < ONE_WEEK) {
+    return styleText('green', text)
+  } else if (elapsed < EIGHT_WEEKS) {
+    return styleText('yellow', text)
+  } else {
+    return styleText('red', text)
+  }
 }

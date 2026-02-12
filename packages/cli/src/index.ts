@@ -1,20 +1,7 @@
 import { logger, setVerbose } from '@good-first-issue/core'
 import { find } from './commands/find/index.js'
-import {
-  printExploreHelp,
-  printFindHelp,
-  printHelpMessage,
-  printLuckyHelp,
-  printOpenHelp,
-} from './help.js'
+import { printHelpMessage, subcommandHelp } from './help.js'
 import { cli } from './parser.js'
-
-const subcommandHelp: Record<string, () => void> = {
-  find: printFindHelp,
-  explore: printExploreHelp,
-  lucky: printLuckyHelp,
-  open: printOpenHelp,
-}
 
 export async function main(): Promise<void> {
   try {
