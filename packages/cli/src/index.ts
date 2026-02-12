@@ -35,8 +35,8 @@ export async function main(): Promise<void> {
       process.exit(1)
     }
   } catch (error) {
-    logger().error(
-      error instanceof Error ? error.message : 'An unknown error occurred while executing the CLI.',
-    )
+    const msg =
+      error instanceof Error ? error.message : 'An unknown error occurred while executing the CLI.'
+    logger().error(msg)
   }
 }

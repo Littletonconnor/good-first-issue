@@ -38,6 +38,9 @@ export function cli() {
       limit: {
         type: 'string',
       },
+      json: {
+        type: 'boolean',
+      },
     },
     allowPositionals: true,
   })
