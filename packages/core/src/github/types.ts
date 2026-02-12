@@ -37,6 +37,8 @@ export type GithubRepository = {
   description: string
 }
 
+export type IssueWithRepo = GitHubIssue & GithubRepository
+
 export type GitHubIssueState = 'open' | 'closed'
 
 export type GitHubAssignee = {

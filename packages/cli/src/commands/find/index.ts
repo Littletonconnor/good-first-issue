@@ -1,24 +1,19 @@
-import { GithubClient, GitHubIssue, IssueSearchParams, logger } from '@good-first-issue/core'
-import { formatTable } from '../../formatter.js'
+import {
+  GithubClient,
+  GitHubIssue,
+  GithubRepository,
+  IssueSearchParams,
+  logger,
+} from '@good-first-issue/core'
+import { IssueWithRepo } from '../../../../core/src/github/types.js'
+import { DEFAULT_LABELS } from '../../constants.js'
+import { stdout } from '../../formatter.js'
 import { CliFlags } from '../../parser.js'
-
-const defaultLabels = [
-  'good first issue',
-  'help wanted',
-  'beginner',
-  'easy',
-  'starter',
-  'first-timers-only',
-  'contributions welcome',
-  'up-for-grabs',
-]
 
 export async function find(cliFlags: CliFlags) {
   const searchParams: IssueSearchParams = {}
-  searchParams.labels = defaultLabels
-  if (cliFlags.labels) {
-    searchParams.labels = [...searchParams.labels, ...cliFlags.labels]
-  }
+  searchParams.labels = DEFAULT_LABELS
+  if (cliFlags.labels) searchParams.labels = [...searchParams.labels, ...cliFlags.labels]
   if (cliFlags.language) searchParams.language = cliFlags.language
   if (cliFlags.org) searchParams.org = cliFlags.org
   if (cliFlags.repo) searchParams.repo = cliFlags.repo
@@ -28,34 +23,42 @@ export async function find(cliFlags: CliFlags) {
   const response = await client.getIssues(searchParams)
 
   if (response.ok) {
-    const repoMap = await fetchRepoDetails(client, response.value.items)
-    console.log(formatTable(response.value.items, repoMap))
+    const { items } = response.value
+    const repoMap = await fetchRepoDetails(client, items)
+    const issues = items.map((item) => buildIssueItem(item, repoMap))
+    stdout(cliFlags, issues)
   } else {
     logger().error(response.error.kind)
   }
 }
 
 async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
-  const repoKeys = new Set(items.map(getRepoName))
-  const repoResults = await Promise.all(
-    [...repoKeys].map((key) => {
+  const repoKeys = [...new Set(items.map(getRepoName))]
+
+  const entries = await Promise.all(
+    repoKeys.map(async (key): Promise<[string, GithubRepository] | null> => {
       const [owner, repo] = key.split('/')
-      return client.getRepository({ owner, repo })
+      const result = await client.getRepository({ owner, repo })
+      return result.ok ? [key, result.value] : null
     }),
   )
 
-  const repoMap = new Map()
-  const keys = [...repoKeys]
-  for (let i = 0; i < keys.length; i++) {
-    const res = repoResults[i]
-    if (res.ok) {
-      repoMap.set(keys[i], res.value)
-    }
-  }
-
-  return repoMap
+  return new Map(entries.filter((e): e is [string, GithubRepository] => e !== null))
 }
 
 function getRepoName(issue: GitHubIssue) {
   return issue.repository_url.split('/').slice(-2).join('/')
+}
+
+function buildIssueItem(issue: GitHubIssue, repoMap: Map<string, GithubRepository>): IssueWithRepo {
+  const key = issue.repository_url.split('/').slice(-2).join('/')
+  const repo = repoMap.get(key)
+
+  return {
+    ...issue,
+    language: repo?.language ?? '-',
+    stargazers_count: repo?.stargazers_count ?? 0,
+    fill_name: repo?.fill_name ?? '-',
+    description: repo?.description ?? '-',
+  }
 }
