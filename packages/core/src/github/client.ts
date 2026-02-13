@@ -28,6 +28,7 @@ export class GithubClient {
 
   getIssues(params: IssueSearchParams): Promise<Result<SearchResponse<GitHubIssue>, GitHubError>> {
     const query = buildQuery(params)
+    logger().verbose('query', `Search query: ${decodeURIComponent(query)}`)
     const endpoint = this.SEARCH_ISSUES_API + `?${query}`
     return this.fetch<SearchResponse<GitHubIssue>>(endpoint)
   }
@@ -39,18 +40,36 @@ export class GithubClient {
 
   private async fetch<T>(url: string): Promise<Result<T, GitHubError>> {
     logger().verbose('request', url)
+    const start = performance.now()
     try {
       const response = await fetch(url, {
         headers: this.headers,
       })
 
+      const elapsed = Math.round(performance.now() - start)
+      logger().verbose('timing', `${elapsed}ms`)
+      logger().verbose('response', `${response.status} ${response.statusText}`)
+
+      const remaining = response.headers.get('x-ratelimit-remaining')
+      const limit = response.headers.get('x-ratelimit-limit')
+      if (remaining !== null && limit !== null) {
+        logger().verbose('response', `Rate limit: ${remaining}/${limit} remaining`)
+      }
+
       if (!response.ok) {
-        return await this.errorKind(response)
+        const result = await this.errorKind(response)
+        if (!result.ok) {
+          logger().verbose('response', `Error: ${result.error.kind}`)
+        }
+        return result
       }
 
       const data = await response.json()
       return ok(data)
     } catch (e: unknown) {
+      const elapsed = Math.round(performance.now() - start)
+      logger().verbose('timing', `${elapsed}ms (failed)`)
+      logger().verbose('response', `Network error: ${e instanceof Error ? e.message : String(e)}`)
       return err({ kind: 'network_error', message: e instanceof Error ? e.message : String(e) })
     }
   }

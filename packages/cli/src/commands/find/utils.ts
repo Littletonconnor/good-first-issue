@@ -13,7 +13,7 @@ export function sliceWidth(str: string, maxWidth: number): string {
   return str.slice(0, i)
 }
 
-function isWide(code: number): boolean {
+export function isWide(code: number): boolean {
   return (
     (code >= 0x1100 && code <= 0x115f) || // Hangul Jamo
     (code >= 0x2e80 && code <= 0x303e) || // CJK Radicals, Kangxi, Ideographic
@@ -35,24 +35,6 @@ function isWide(code: number): boolean {
   )
 }
 
-function displayWidth(str: string): number {
-  let width = 0
-  for (const char of str) {
-    width += isWide(char.codePointAt(0)!) ? 2 : 1
-  }
-  return width
-}
-
-export function padEnd(str: string, width: number): string {
-  const diff = width - displayWidth(str)
-  return diff > 0 ? str + ' '.repeat(diff) : str
-}
-
-export function padStart(str: string, width: number): string {
-  const diff = width - displayWidth(str)
-  return diff > 0 ? ' '.repeat(diff) + str : str
-}
-
 export function formatStars(count: number): string {
   if (count >= 1000) {
     return (count / 1000).toFixed(count >= 10000 ? 0 : 1) + 'k'
@@ -68,12 +50,6 @@ export function formatAge(dateString: string): string {
   if (seconds < 2592000) return Math.floor(seconds / 604800) + 'w ago'
   if (seconds < 31536000) return Math.floor(seconds / 2592000) + 'mo ago'
   return Math.floor(seconds / 31536000) + 'y ago'
-}
-
-export function truncate(str: string, maxWidth: number): string {
-  if (displayWidth(str) <= maxWidth) return str
-  const truncated = sliceWidth(str, maxWidth - 3)
-  return truncated + '...'
 }
 
 export function ageColor(dateString: string, text: string): string {

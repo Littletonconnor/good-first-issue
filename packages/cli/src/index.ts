@@ -11,6 +11,8 @@ export async function main(): Promise<void> {
     }
 
     const command = positionals[0] ?? 'find'
+    logger().verbose('config', `Command: ${command}`)
+    logger().verbose('config', `GitHub token: ${process.env.GITHUB_TOKEN ? 'present' : 'not set'}`)
 
     if (cliFlags.help) {
       const helpFn = subcommandHelp[command]

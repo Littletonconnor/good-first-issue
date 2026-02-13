@@ -1,16 +1,9 @@
 import { styleText } from 'node:util'
-import { IssueWithRepo } from '../../core/src/github/types.js'
+import { CliFlags } from '../../parser.js'
+import { IssueWithRepo } from '@good-first-issue/core'
 import { COL_WIDTH } from './constants.js'
-import { CliFlags } from './parser.js'
-import {
-  ageColor,
-  formatAge,
-  formatStars,
-  padEnd,
-  padStart,
-  sliceWidth,
-  truncate,
-} from './utils.js'
+import { padEnd, padStart, truncate } from '../utils.js'
+import { ageColor, formatAge, formatStars, sliceWidth } from './utils.js'
 
 export function stdout(cliFlags: CliFlags, issues: IssueWithRepo[]) {
   if (cliFlags.json) {

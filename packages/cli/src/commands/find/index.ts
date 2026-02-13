@@ -6,9 +6,9 @@ import {
   logger,
 } from '@good-first-issue/core'
 import { IssueWithRepo } from '../../../../core/src/github/types.js'
-import { DEFAULT_LABELS } from '../../constants.js'
-import { stdout } from '../../formatter.js'
+import { DEFAULT_LABELS } from './constants.js'
 import { CliFlags } from '../../parser.js'
+import { stdout } from './formatter.js'
 
 export async function find(cliFlags: CliFlags) {
   const searchParams: IssueSearchParams = {}
@@ -19,13 +19,25 @@ export async function find(cliFlags: CliFlags) {
   if (cliFlags.repo) searchParams.repo = cliFlags.repo
   if (cliFlags.limit) searchParams.perPage = Number(cliFlags.limit)
 
+  logger().verbose('config', `Search params: ${JSON.stringify(searchParams)}`)
+
   const client = new GithubClient({ token: process.env.GITHUB_TOKEN })
   const response = await client.getIssues(searchParams)
 
   if (response.ok) {
-    const { items } = response.value
+    const { items, total_count, incomplete_results } = response.value
+    logger().verbose('response', `Found ${total_count} total issues (fetched ${items.length})`)
+    if (incomplete_results) {
+      logger().verbose('response', 'Results may be incomplete (GitHub timed out)')
+    }
+
     const repoMap = await fetchRepoDetails(client, items)
     const issues = items.map((item) => buildIssueItem(item, repoMap))
+
+    logger().verbose(
+      'output',
+      `Outputting ${issues.length} issues as ${cliFlags.json ? 'json' : 'table'}`,
+    )
     stdout(cliFlags, issues)
   } else {
     logger().error(response.error.kind)
@@ -34,7 +46,12 @@ export async function find(cliFlags: CliFlags) {
 
 async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
   const repoKeys = [...new Set(items.map(getRepoName))]
+  logger().verbose(
+    'request',
+    `Fetching details for ${repoKeys.length} repositories: ${repoKeys.join(', ')}`,
+  )
 
+  const start = performance.now()
   const entries = await Promise.all(
     repoKeys.map(async (key): Promise<[string, GithubRepository] | null> => {
       const [owner, repo] = key.split('/')
@@ -43,7 +60,14 @@ async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
     }),
   )
 
-  return new Map(entries.filter((e): e is [string, GithubRepository] => e !== null))
+  const results = entries.filter((e): e is [string, GithubRepository] => e !== null)
+  const elapsed = Math.round(performance.now() - start)
+  logger().verbose(
+    'timing',
+    `Repo details fetched in ${elapsed}ms (${results.length}/${repoKeys.length} succeeded)`,
+  )
+
+  return new Map(results)
 }
 
 function getRepoName(issue: GitHubIssue) {
