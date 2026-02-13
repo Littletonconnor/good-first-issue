@@ -1,5 +1,91 @@
+import {
+  GithubClient,
+  GitHubIssue,
+  GithubRepository,
+  IssueWithRepo,
+  logger,
+} from '@good-first-issue/core'
+import { readdirSync } from 'node:fs'
 import { styleText } from 'util'
-import { EIGHT_WEEKS, ONE_WEEK } from './constants.js'
+import { CliFlags } from '../../parser.js'
+import { DEFAULT_LABELS, EIGHT_WEEKS, ONE_WEEK } from './constants.js'
+
+export function determineLanguage(cliFlags: CliFlags) {
+  if (cliFlags.language) return cliFlags.language
+  const files = new Set(readdirSync(process.cwd()))
+
+  if (files.has('tsconfig.json') && files.has('package.json')) {
+    return 'typescript'
+  } else if (files.has('package.json')) {
+    return 'javascript'
+  } else if (files.has('Cargo.toml')) {
+    return 'rust'
+  } else if (files.has('go.mod')) {
+    return 'go'
+  } else if ([...files].some((f) => f.endsWith('.csproj'))) {
+    return 'c#'
+  } else if (files.has('pyproject.toml') || files.has('requirements.txt')) {
+    return 'python'
+  } else if (files.has('Gemfile')) {
+    return 'ruby'
+  } else if (files.has('pom.xml') || files.has('build.gradle')) {
+    return 'java'
+  } else if (files.has('mix.exs')) {
+    return 'elixir'
+  } else if (files.has('Package.swift')) {
+    return 'swift'
+  }
+}
+
+export function determineLabels(cliFlags: CliFlags) {
+  const labels = DEFAULT_LABELS
+  if (cliFlags.labels) return [...labels, ...cliFlags.labels]
+  return labels
+}
+
+export async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
+  const repoKeys = [
+    ...new Set(items.map((item) => item.repository_url.split('/').slice(-2).join('/'))),
+  ]
+  logger().verbose(
+    'request',
+    `Fetching details for ${repoKeys.length} repositories: ${repoKeys.join(', ')}`,
+  )
+
+  const start = performance.now()
+  const entries = await Promise.all(
+    repoKeys.map(async (key): Promise<[string, GithubRepository] | null> => {
+      const [owner, repo] = key.split('/')
+      const result = await client.getRepository({ owner, repo })
+      return result.ok ? [key, result.value] : null
+    }),
+  )
+
+  const results = entries.filter((e): e is [string, GithubRepository] => e !== null)
+  const elapsed = Math.round(performance.now() - start)
+  logger().verbose(
+    'timing',
+    `Repo details fetched in ${elapsed}ms (${results.length}/${repoKeys.length} succeeded)`,
+  )
+
+  return new Map(results)
+}
+
+export function buildIssueItem(
+  issue: GitHubIssue,
+  repoMap: Map<string, GithubRepository>,
+): IssueWithRepo {
+  const key = issue.repository_url.split('/').slice(-2).join('/')
+  const repo = repoMap.get(key)
+
+  return {
+    ...issue,
+    language: repo?.language ?? '-',
+    stargazers_count: repo?.stargazers_count ?? 0,
+    fill_name: repo?.fill_name ?? '-',
+    description: repo?.description ?? '-',
+  }
+}
 
 export function sliceWidth(str: string, maxWidth: number): string {
   let width = 0
