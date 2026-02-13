@@ -79,6 +79,7 @@ Make the tool intelligent with zero configuration.
 
 - [ ] Search across multiple label variations (requires multiple API calls + merge, GitHub doesn't support OR with qualifiers)
 - [ ] Ensure unassigned filter is applied by default (`no:assignee`)
+- [ ] Add `--assigned` flag to include issues that already have an assignee (overrides default `no:assignee` filter)
 
 ### GitHub Token Support
 

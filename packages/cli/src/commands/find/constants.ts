@@ -1,12 +1,10 @@
 export const DEFAULT_LABELS = [
-  'good first issue',
   'help wanted',
+  'good first issue',
+  'good first bug',
   'beginner',
-  'easy',
-  'starter',
+  'beginner-friendly',
   'first-timers-only',
-  'contributions welcome',
-  'up-for-grabs',
 ]
 
 export const COL_WIDTH = {
