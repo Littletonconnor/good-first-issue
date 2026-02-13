@@ -60,8 +60,8 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 
 ### Verbose Logging
 
-- [ ] Add verbose logging throughout CLI (search params, API URLs, timing, repo fetch details)
-- [ ] Ensure `--verbose` / `-v` surfaces useful debug info for all commands
+- [x] Add verbose logging throughout CLI (search params, API URLs, timing, repo fetch details)
+- [x] Ensure `--verbose` / `-v` surfaces useful debug info for all commands
 
 ---
 
