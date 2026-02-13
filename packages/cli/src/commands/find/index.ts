@@ -1,16 +1,10 @@
-import { GithubClient, IssueSearchParams, logger } from '@good-first-issue/core'
+import { GithubClient, logger } from '@good-first-issue/core'
 import { CliFlags } from '../../parser.js'
 import { stdout } from './formatter.js'
-import { buildIssueItem, determineLabels, determineLanguage, fetchRepoDetails } from './utils.js'
+import { buildIssueItem, buildSearchParams, fetchRepoDetails } from './utils.js'
 
 export async function find(cliFlags: CliFlags) {
-  const searchParams: IssueSearchParams = {}
-
-  searchParams.language = determineLanguage(cliFlags)
-  searchParams.labels = determineLabels(cliFlags)
-  if (cliFlags.org) searchParams.org = cliFlags.org
-  if (cliFlags.repo) searchParams.repo = cliFlags.repo
-  if (cliFlags.limit) searchParams.perPage = Number(cliFlags.limit)
+  const searchParams = buildSearchParams(cliFlags)
 
   logger().verbose('config', `Search params: ${JSON.stringify(searchParams)}`)
 

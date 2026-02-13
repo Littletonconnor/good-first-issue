@@ -2,6 +2,7 @@ import {
   GithubClient,
   GitHubIssue,
   GithubRepository,
+  IssueSearchParams,
   IssueWithRepo,
   logger,
 } from '@good-first-issue/core'
@@ -9,6 +10,17 @@ import { readdirSync } from 'node:fs'
 import { styleText } from 'util'
 import { CliFlags } from '../../parser.js'
 import { DEFAULT_LABELS, EIGHT_WEEKS, ONE_WEEK } from './constants.js'
+
+export function buildSearchParams(cliFlags: CliFlags): IssueSearchParams {
+  const searchParams: IssueSearchParams = {}
+  searchParams.language = determineLanguage(cliFlags)
+  searchParams.labels = determineLabels(cliFlags)
+  if (cliFlags.org) searchParams.org = cliFlags.org
+  if (cliFlags.repo) searchParams.repo = cliFlags.repo
+  if (cliFlags.limit) searchParams.perPage = Number(cliFlags.limit)
+
+  return searchParams
+}
 
 export function determineLanguage(cliFlags: CliFlags) {
   if (cliFlags.language) return cliFlags.language
