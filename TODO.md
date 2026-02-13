@@ -51,7 +51,7 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 - [x] Fetch repo details (stars, language) via `getRepository` with parallel `Promise.all`
 - [x] Handle CJK/double-width characters in table column alignment
 - [x] Add ANSI color output using `node:util` styleText (no chalk)
-- [ ] Add `--json` flag for machine-readable output
+- [x] Add `--json` flag for machine-readable output
 
 ### Help Text
 
