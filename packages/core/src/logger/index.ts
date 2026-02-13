@@ -12,6 +12,9 @@ export type VerboseLabel =
   | 'retry'
   | 'form'
   | 'proxy'
+  | 'query'
+  | 'timing'
+  | 'config'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 type StyleColor = Parameters<typeof styleText>[0]
@@ -35,6 +38,9 @@ const VERBOSE_LABEL_COLORS: Record<VerboseLabel, StyleColor> = {
   retry: 'yellowBright',
   form: 'blueBright',
   proxy: 'magentaBright',
+  query: 'blueBright',
+  timing: 'magentaBright',
+  config: 'whiteBright',
 }
 
 let verboseEnabled = false

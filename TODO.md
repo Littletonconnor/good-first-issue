@@ -51,7 +51,7 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 - [x] Fetch repo details (stars, language) via `getRepository` with parallel `Promise.all`
 - [x] Handle CJK/double-width characters in table column alignment
 - [x] Add ANSI color output using `node:util` styleText (no chalk)
-- [ ] Add `--json` flag for machine-readable output
+- [x] Add `--json` flag for machine-readable output
 
 ### Help Text
 
@@ -60,8 +60,8 @@ Wire up the `find` subcommand end-to-end: parse args, call GitHub, print results
 
 ### Verbose Logging
 
-- [ ] Add verbose logging throughout CLI (search params, API URLs, timing, repo fetch details)
-- [ ] Ensure `--verbose` / `-v` surfaces useful debug info for all commands
+- [x] Add verbose logging throughout CLI (search params, API URLs, timing, repo fetch details)
+- [x] Ensure `--verbose` / `-v` surfaces useful debug info for all commands
 
 ---
 
@@ -71,9 +71,9 @@ Make the tool intelligent with zero configuration.
 
 ### Language Auto-Detection
 
-- [ ] Detect language from current working directory
-- [ ] Support: `package.json` (TS/JS), `Cargo.toml` (Rust), `go.mod` (Go), `pyproject.toml`/`requirements.txt` (Python), `Gemfile` (Ruby), `pom.xml`/`build.gradle` (Java), `*.csproj` (C#), `mix.exs` (Elixir), `Package.swift` (Swift)
-- [ ] Fall back to all languages when no project files are found
+- [x] Detect language from current working directory
+- [x] Support: `package.json` (TS/JS), `Cargo.toml` (Rust), `go.mod` (Go), `pyproject.toml`/`requirements.txt` (Python), `Gemfile` (Ruby), `pom.xml`/`build.gradle` (Java), `*.csproj` (C#), `mix.exs` (Elixir), `Package.swift` (Swift)
+- [x] Fall back to all languages when no project files are found
 
 ### Default Label Expansion
 
