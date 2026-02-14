@@ -130,10 +130,10 @@ Rank issues by how likely they are to be a good contributor experience.
 
 ### `open`
 
-- [ ] Implement `open` subcommand
-- [ ] Store last search results (in-memory or temp file)
-- [ ] Accept a number (1-indexed) to open from last results
-- [ ] Open URL in default browser using platform-appropriate command (`open` on macOS, `xdg-open` on Linux)
+- [x] Implement `open` subcommand
+- [x] Store last search results (in-memory or temp file)
+- [x] Accept a number (1-indexed) to open from last results
+- [x] Open URL in default browser using platform-appropriate command (`open` on macOS, `xdg-open` on Linux)
 
 ### `explore`
 
@@ -156,6 +156,7 @@ Rank issues by how likely they are to be a good contributor experience.
 
 ### Output Polish
 
+- [ ] Replace GitHub issue number with result index (1, 2, 3...) to match `open` command numbering
 - [ ] Box drawing for detailed single-issue view (`lucky`, `open`)
 - [ ] Compact vs detailed output modes
 - [ ] Pagination hint ("Showing 10 of 342 results. Use --limit to see more.")
@@ -195,6 +196,13 @@ These are not prioritized. Pick them up when the core is solid.
 - [ ] GitHub OAuth for personalized recommendations
 - [ ] Recommendations based on starred repos and contribution history
 - [ ] Save favorite projects
+
+### Configuration File
+
+- [ ] Support a config file (e.g., `~/.good-first-issue/config.json`) for persistent preferences
+- [ ] Allow blocklisting repos/orgs that spam low-quality issues (e.g., `exclude: ["org/repo"]`)
+- [ ] Allow setting default language, labels, and other search preferences
+- [ ] CLI flag to manage config (`good-first-issue config --exclude org/repo`)
 
 ### Multi-Platform
 
