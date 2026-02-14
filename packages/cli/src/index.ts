@@ -25,8 +25,15 @@ export async function main(): Promise<void> {
       process.exit(0)
     }
 
+    // TODO: move to validate methods
     if (command === 'open' && !positionals[1]) {
-      logger().error('good-first-issue open must be in the format: good-first-issue open <number>')
+      logger().error('Missing issue number. Usage: good-first-issue open <number>')
+    }
+
+    if (command === 'open' && Number.isNaN(Number(positionals[1]))) {
+      logger().error(
+        `"${positionals[1]}" is not a valid number. Usage: good-first-issue open <number>`,
+      )
     }
 
     if (command === 'find') {

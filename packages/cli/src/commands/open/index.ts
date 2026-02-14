@@ -4,18 +4,24 @@ import { execFile } from 'node:child_process'
 import { getIssue, getSearchResultsFilepath } from './utils.js'
 
 export async function open(issue: number) {
-  logger().verbose('config', `Calling good-first-issue open with #${issue}`)
-
   const filepath = getSearchResultsFilepath()
+  logger().verbose('config', `Opening issue #${issue} from ${filepath}`)
 
   try {
     const rawContent = await fs.readFile(filepath, 'utf-8')
     const content = JSON.parse(rawContent)
-    logger().verbose('config', `Parsed content ${JSON.stringify(content)}`)
+    logger().verbose('response', `Loaded ${Array.isArray(content) ? content.length : 0} cached results`)
     const url = getIssue(content, issue)
+    logger().verbose('request', `Opening ${url}`)
     execFile('open', [url])
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : `Error reading: ${filepath}`
+    if (error instanceof SyntaxError) {
+      logger().error('Search results file is corrupted. Run a search first with: good-first-issue find')
+    }
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      logger().error('No search results found. Run a search first with: good-first-issue find')
+    }
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
     logger().error(errorMessage)
   }
 }

@@ -31,7 +31,7 @@ export async function saveSearchResults(issues: IssueWithRepo[]) {
   const filepath = getSearchResultsFilepath()
 
   try {
-    logger().verbose('config', `writing to ${filepath}`)
+    logger().verbose('output', `Saving ${urls.length} results to ${filepath}`)
     await fs.writeFile(filepath, JSON.stringify(urls))
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : 'Unknown error'
