@@ -19,8 +19,6 @@ export class GithubClient {
 
   private BASE_API = 'https://api.github.com'
   private SEARCH_ISSUES_API = this.BASE_API + '/search/issues'
-  private SEARCH_REPOSITORIES_API = this.BASE_API + '/search/repositories'
-  private SEARCH_CODE_API = this.BASE_API + '/search/code'
 
   constructor(config: Config = {}) {
     this.config = config
