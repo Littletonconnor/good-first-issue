@@ -1,5 +1,6 @@
 import { logger, setVerbose } from '@good-first-issue/core'
 import { find } from './commands/find/index.js'
+import { open } from './commands/open/index.js'
 import { printHelpMessage, subcommandHelp } from './help.js'
 import { cli } from './parser.js'
 
@@ -24,12 +25,24 @@ export async function main(): Promise<void> {
       process.exit(0)
     }
 
+    // TODO: move to validate methods
+    if (command === 'open' && !positionals[1]) {
+      logger().error('Missing issue number. Usage: good-first-issue open <number>')
+    }
+
+    if (command === 'open' && Number.isNaN(Number(positionals[1]))) {
+      logger().error(
+        `"${positionals[1]}" is not a valid number. Usage: good-first-issue open <number>`,
+      )
+    }
+
     if (command === 'find') {
       await find(cliFlags)
     } else if (command === 'lucky') {
       // TODO: implement lucky command
     } else if (command === 'open') {
-      // TODO: implement open command
+      const issue = Number(positionals[1])
+      await open(issue)
     } else if (command === 'explore') {
       // TODO: implement explore command
     } else {

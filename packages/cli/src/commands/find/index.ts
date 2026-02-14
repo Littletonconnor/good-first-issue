@@ -1,5 +1,6 @@
 import { GithubClient, logger } from '@good-first-issue/core'
 import { CliFlags } from '../../parser.js'
+import { saveSearchResults } from '../open/utils.js'
 import { stdout } from './formatter.js'
 import { buildIssueItem, buildSearchParams, fetchRepoDetails } from './utils.js'
 
@@ -26,7 +27,11 @@ export async function find(cliFlags: CliFlags) {
       `Outputting ${issues.length} issues as ${cliFlags.json ? 'json' : 'table'}`,
     )
     stdout(cliFlags, issues)
+    await saveSearchResults(issues)
   } else {
-    logger().error(response.error.kind)
+    const error = response.error
+    logger().error(
+      `${error.kind}: ${error.kind === 'rate_limit' ? `Reset at ${error.resetAt}` : error.message}`,
+    )
   }
 }

@@ -13,9 +13,11 @@ import { DEFAULT_LABELS, EIGHT_WEEKS, ONE_WEEK } from './constants.js'
 
 export function buildSearchParams(cliFlags: CliFlags): IssueSearchParams {
   const searchParams: IssueSearchParams = {}
+  searchParams.noAssignee = true
   searchParams.language = determineLanguage(cliFlags)
   searchParams.labels = determineLabels(cliFlags)
   if (cliFlags.org) searchParams.org = cliFlags.org
+  if (cliFlags.assigned) searchParams.noAssignee = false
   if (cliFlags.repo) searchParams.repo = cliFlags.repo
   if (cliFlags.limit) searchParams.perPage = Number(cliFlags.limit)
 
@@ -103,12 +105,22 @@ export function sliceWidth(str: string, maxWidth: number): string {
   let width = 0
   let i = 0
   for (const char of str) {
-    const w = isWide(char.codePointAt(0)!) ? 2 : 1
+    const cp = char.codePointAt(0)!
+    const w = isZeroWidth(cp) ? 0 : isWide(cp) ? 2 : 1
     if (width + w > maxWidth) break
     width += w
     i += char.length
   }
   return str.slice(0, i)
+}
+
+export function isZeroWidth(code: number): boolean {
+  return (
+    code === 0xfe0f || // Variation Selector 16 (emoji presentation)
+    code === 0xfe0e || // Variation Selector 15 (text presentation)
+    code === 0x200d || // Zero-Width Joiner
+    code === 0x20e3 // Combining Enclosing Keycap
+  )
 }
 
 export function isWide(code: number): boolean {
