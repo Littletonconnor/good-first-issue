@@ -1,4 +1,4 @@
-import { isWide, sliceWidth } from './find/utils.js'
+import { isWide, isZeroWidth, sliceWidth } from './find/utils.js'
 
 export function padEnd(str: string, width: number): string {
   const diff = width - displayWidth(str)
@@ -19,7 +19,8 @@ export function truncate(str: string, maxWidth: number): string {
 function displayWidth(str: string): number {
   let width = 0
   for (const char of str) {
-    width += isWide(char.codePointAt(0)!) ? 2 : 1
+    const cp = char.codePointAt(0)!
+    width += isZeroWidth(cp) ? 0 : isWide(cp) ? 2 : 1
   }
   return width
 }

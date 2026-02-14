@@ -19,6 +19,10 @@ export function cli() {
         type: 'string',
         short: 'l',
       },
+      assigned: {
+        type: 'boolean',
+        default: false,
+      },
       labels: {
         type: 'string',
         multiple: true,
