@@ -35,7 +35,10 @@ Options:
   -o, --org <name>         Search within a GitHub organization
   -r, --repo <owner/name>  Search a specific repository
   -s, --sort <order>       Sort: quality, newest, comments (default: quality)
+      --labels <label>     Add custom labels (repeatable)
+      --assigned           Include issues with an assignee
       --limit <n>          Number of results (default: 10)
+      --json               Output results as JSON
   -h, --help               Show this help message
   -v, --verbose            Show quality score breakdown per issue
 
