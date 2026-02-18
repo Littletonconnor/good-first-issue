@@ -14,7 +14,7 @@ export function stdout(cliFlags: CliFlags, issues: IssueWithRepo[]) {
 }
 
 export function formatTable(issues: IssueWithRepo[]) {
-  const rows = issues.map((issue) => formatIssueRow(issue))
+  const rows = issues.map((issue, i) => formatIssueRow(issue, i + 1))
 
   const disclosure = styleText(
     'dim',
@@ -24,7 +24,7 @@ export function formatTable(issues: IssueWithRepo[]) {
   return [topBorder(), headerRow(), separator(), ...rows, bottomBorder(), '', disclosure].join('\n')
 }
 
-function formatIssueRow(issue: IssueWithRepo): string {
+function formatIssueRow(issue: IssueWithRepo, index: number) {
   const repoName = issue.repository_url.split('/').slice(-2).join('/')
   return row([
     styleText('cyan', padEnd(truncate(repoName, COL_WIDTH.repo), COL_WIDTH.repo)),
@@ -33,7 +33,7 @@ function formatIssueRow(issue: IssueWithRepo): string {
       padEnd(sliceWidth(issue?.language ?? '-', COL_WIDTH.language), COL_WIDTH.language),
     ),
     padStart(formatStars(issue?.stargazers_count ?? 0), COL_WIDTH.stars),
-    styleText('dim', padStart(`#${issue.number}`, COL_WIDTH.issue)),
+    styleText('dim', padStart(`#${index}`, COL_WIDTH.issue)),
     padEnd(truncate(issue.title, COL_WIDTH.title), COL_WIDTH.title),
     ageColor(issue.created_at, padStart(formatAge(issue.created_at), COL_WIDTH.age)),
     padStart(String(issue.comments), COL_WIDTH.comments),
