@@ -80,6 +80,7 @@ Make the tool intelligent with zero configuration.
 - [x] Search across multiple label variations (requires multiple API calls + merge, GitHub doesn't support OR with qualifiers)
 - [x] Ensure unassigned filter is applied by default (`no:assignee`)
 - [x] Add `--assigned` flag to include issues that already have an assignee (overrides default `no:assignee` filter)
+- [ ] Add `quick-win` to default label list
 
 ### GitHub Token Support
 
@@ -152,7 +153,8 @@ Rank issues by how likely they are to be a good contributor experience.
 - [ ] Graceful handling when no results found
 - [ ] Helpful message when rate limited (suggest adding GITHUB_TOKEN)
 - [ ] Handle network errors with clear messages
-- [ ] Validate flag values (e.g., `--limit` must be a number)
+- [ ] Validate `--limit` is a positive number; show clear error otherwise
+- [ ] Set explicit default `--limit` to 30 (currently implicit via GitHub API default)
 
 ### Output Polish
 
@@ -203,6 +205,12 @@ These are not prioritized. Pick them up when the core is solid.
 - [ ] Allow blocklisting repos/orgs that spam low-quality issues (e.g., `exclude: ["org/repo"]`)
 - [ ] Allow setting default language, labels, and other search preferences
 - [ ] CLI flag to manage config (`good-first-issue config --exclude org/repo`)
+
+### Contributor Guide (`guide` command or docs)
+
+- [ ] Walk users through the full contribution workflow: finding an issue, commenting to claim it, forking, branching, submitting a PR, and responding to review
+- [ ] Cover etiquette and best practices (e.g., ask before working on an issue, keep PRs focused, be patient with maintainers)
+- [ ] Explain how to read a CONTRIBUTING.md and what to look for in a repo before contributing
 
 ### Multi-Platform
 
