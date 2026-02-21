@@ -5,6 +5,7 @@ export const DEFAULT_LABELS = [
   'beginner',
   'beginner-friendly',
   'first-timers-only',
+  'quick-win',
 ]
 
 export const COL_WIDTH = {
