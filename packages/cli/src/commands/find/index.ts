@@ -30,8 +30,16 @@ export async function find(cliFlags: CliFlags) {
     await saveSearchResults(issues)
   } else {
     const error = response.error
-    logger().error(
-      `${error.kind}: ${error.kind === 'rate_limit' ? `Reset at ${error.resetAt}` : error.message}`,
-    )
+    if (error.kind === 'rate_limit') {
+      const reset = Math.ceil((error.resetAt.getTime() - Date.now()) / 60000)
+      const hasToken = process.env.GITHUB_TOKEN
+      logger().error(
+        hasToken
+          ? `Github API rate limit exceeded. Resets in ~${reset} minutes`
+          : `Set a GITHUB_TOKEN environment variable to increase your rate limit. Resets in ~${reset} minutes`,
+      )
+    } else {
+      logger().error(`${error.kind}: ${error.message}`)
+    }
   }
 }

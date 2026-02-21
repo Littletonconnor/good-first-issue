@@ -86,7 +86,7 @@ Make the tool intelligent with zero configuration.
 
 - [x] Read `GITHUB_TOKEN` from environment
 - [x] Pass token to GithubClient for higher rate limits
-- [ ] Show helpful message when rate limited without a token
+- [x] Show helpful message when rate limited without a token
 
 ---
 
