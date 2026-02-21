@@ -80,13 +80,13 @@ Make the tool intelligent with zero configuration.
 - [x] Search across multiple label variations (requires multiple API calls + merge, GitHub doesn't support OR with qualifiers)
 - [x] Ensure unassigned filter is applied by default (`no:assignee`)
 - [x] Add `--assigned` flag to include issues that already have an assignee (overrides default `no:assignee` filter)
-- [ ] Add `quick-win` to default label list
+- [x] Add `quick-win` to default label list
 
 ### GitHub Token Support
 
 - [x] Read `GITHUB_TOKEN` from environment
 - [x] Pass token to GithubClient for higher rate limits
-- [ ] Show helpful message when rate limited without a token
+- [x] Show helpful message when rate limited without a token
 
 ---
 
