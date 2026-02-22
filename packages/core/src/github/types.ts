@@ -37,7 +37,8 @@ export type GithubRepository = {
   description: string
 }
 
-export type IssueWithRepo = GitHubIssue & GithubRepository
+export type IssueWithRepoMetadata = GitHubIssue & GithubRepository
+export type IssueWithMetadata = GitHubIssue & GithubRepository & { score: number }
 
 export type GitHubIssueState = 'open' | 'closed'
 

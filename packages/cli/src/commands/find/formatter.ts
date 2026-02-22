@@ -1,11 +1,11 @@
 import { styleText } from 'node:util'
 import { CliFlags } from '../../parser.js'
-import { IssueWithRepo } from '@good-first-issue/core'
+import { IssueWithMetadata } from '@good-first-issue/core'
 import { COL_WIDTH } from './constants.js'
 import { padEnd, padStart, truncate } from '../utils.js'
 import { ageColor, formatAge, formatStars, sliceWidth } from './utils.js'
 
-export function stdout(cliFlags: CliFlags, issues: IssueWithRepo[]) {
+export function stdout(cliFlags: CliFlags, issues: IssueWithMetadata[]) {
   if (cliFlags.json) {
     return console.log(JSON.stringify(issues, null, 2))
   } else {
@@ -13,7 +13,7 @@ export function stdout(cliFlags: CliFlags, issues: IssueWithRepo[]) {
   }
 }
 
-export function formatTable(issues: IssueWithRepo[]) {
+export function formatTable(issues: IssueWithMetadata[]) {
   const rows = issues.map((issue, i) => formatIssueRow(issue, i + 1))
 
   const disclosure = styleText(
@@ -24,7 +24,7 @@ export function formatTable(issues: IssueWithRepo[]) {
   return [topBorder(), headerRow(), separator(), ...rows, bottomBorder(), '', disclosure].join('\n')
 }
 
-function formatIssueRow(issue: IssueWithRepo, index: number) {
+function formatIssueRow(issue: IssueWithMetadata, index: number) {
   const repoName = issue.repository_url.split('/').slice(-2).join('/')
   return row([
     styleText('cyan', padEnd(truncate(repoName, COL_WIDTH.repo), COL_WIDTH.repo)),
@@ -33,6 +33,7 @@ function formatIssueRow(issue: IssueWithRepo, index: number) {
       padEnd(sliceWidth(issue?.language ?? '-', COL_WIDTH.language), COL_WIDTH.language),
     ),
     padStart(formatStars(issue?.stargazers_count ?? 0), COL_WIDTH.stars),
+    styleText('dim', padStart(`${issue.score}`, COL_WIDTH.score)),
     styleText('dim', padStart(`#${index}`, COL_WIDTH.issue)),
     padEnd(truncate(issue.title, COL_WIDTH.title), COL_WIDTH.title),
     ageColor(issue.created_at, padStart(formatAge(issue.created_at), COL_WIDTH.age)),
@@ -45,6 +46,7 @@ function headerRow(): string {
     styleText('bold', padEnd('Repo', COL_WIDTH.repo)),
     styleText('bold', padEnd('Language', COL_WIDTH.language)),
     styleText('bold', padStart('Stars', COL_WIDTH.stars)),
+    styleText('bold', padStart('Score', COL_WIDTH.score)),
     styleText('bold', padStart('#', COL_WIDTH.issue)),
     styleText('bold', padEnd('Title', COL_WIDTH.title)),
     styleText('bold', padStart('Age', COL_WIDTH.age)),
@@ -91,6 +93,7 @@ function colWidths(): number[] {
     COL_WIDTH.repo,
     COL_WIDTH.language,
     COL_WIDTH.stars,
+    COL_WIDTH.score,
     COL_WIDTH.issue,
     COL_WIDTH.title,
     COL_WIDTH.age,

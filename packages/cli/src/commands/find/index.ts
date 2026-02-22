@@ -2,7 +2,12 @@ import { GithubClient, logger } from '@good-first-issue/core'
 import { CliFlags } from '../../parser.js'
 import { saveSearchResults } from '../open/utils.js'
 import { stdout } from './formatter.js'
-import { buildIssueItem, buildSearchParams, fetchRepoDetails } from './utils.js'
+import {
+  buildIssueWithRepoAndScoreMetadata,
+  buildSearchParams,
+  fetchRepoDetails,
+  sortIssues,
+} from './utils.js'
 
 export async function find(cliFlags: CliFlags) {
   const searchParams = buildSearchParams(cliFlags)
@@ -20,7 +25,9 @@ export async function find(cliFlags: CliFlags) {
     }
 
     const repoMap = await fetchRepoDetails(client, items)
-    const issues = items.map((item) => buildIssueItem(item, repoMap))
+    const issues = sortIssues(
+      items.map((item) => buildIssueWithRepoAndScoreMetadata(item, repoMap)),
+    )
 
     logger().verbose(
       'output',

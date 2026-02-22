@@ -2,9 +2,11 @@ import {
   GithubClient,
   GitHubIssue,
   GithubRepository,
+  IssueWithMetadata,
   IssueSearchParams,
-  IssueWithRepo,
+  IssueWithRepoMetadata,
   logger,
+  scoreIssue,
 } from '@good-first-issue/core'
 import { readdirSync } from 'node:fs'
 import { styleText } from 'util'
@@ -85,20 +87,29 @@ export async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[
   return new Map(results)
 }
 
-export function buildIssueItem(
+export function buildIssueWithRepoAndScoreMetadata(
   issue: GitHubIssue,
   repoMap: Map<string, GithubRepository>,
-): IssueWithRepo {
+): IssueWithMetadata {
   const key = issue.repository_url.split('/').slice(-2).join('/')
   const repo = repoMap.get(key)
 
-  return {
+  const issueWithRepoMetadata: IssueWithRepoMetadata = {
     ...issue,
     language: repo?.language ?? '-',
     stargazers_count: repo?.stargazers_count ?? 0,
     fill_name: repo?.fill_name ?? '-',
     description: repo?.description ?? '-',
   }
+
+  return {
+    ...issueWithRepoMetadata,
+    score: scoreIssue(issueWithRepoMetadata),
+  }
+}
+
+export function sortIssues(issues: IssueWithMetadata[]) {
+  return issues.sort((a, b) => b.score - a.score)
 }
 
 export function sliceWidth(str: string, maxWidth: number): string {

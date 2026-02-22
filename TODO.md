@@ -96,24 +96,50 @@ Rank issues by how likely they are to be a good contributor experience.
 
 ### Scoring Algorithm
 
-- [ ] Create `scoreIssue()` function in `packages/core`
-- [ ] Score freshness — recently created issues score higher
-- [ ] Score description quality — longer, well-formatted descriptions score higher
-- [ ] Score engagement — maintainer comments indicate active shepherding
-- [ ] Score unassigned status — unassigned issues preferred
-- [ ] Penalize staleness — issues open for 6+ months with no activity score lower
-- [ ] Normalize scores to 0-100 scale
+`scoreIssue()` in `packages/core/src/scoring/index.ts`. Three signals, weighted to total 0–100.
 
-### Repo Health Signals
+#### Freshness (0–60 points) — uses `created_at` ✅
 
-- [ ] Check last commit date via GitHub API
-- [ ] Check for CONTRIBUTING.md presence
-- [ ] Check recent release activity
-- [ ] Factor repo health into issue score
+Exponential decay with a 90-day half-life. Score = 60 \* 2^(-daysOld / 90).
+
+- [x] Exponential decay curve based on issue age
+- [x] Full marks (~60) for issues under 7 days old, ~48 at 30 days, 30 at 90 days, ~4 at 1 year
+- [x] Clamped to max 60 (handles future-dated edge case)
+- [x] Returns rounded integer for clean display
+
+#### Repo Engagement (0–25 points) — requires extra API calls
+
+Measures how active the repo is, not the issue itself. A repo with recent commits means your PR will actually get reviewed.
+
+- [ ] Fetch recent commit activity for each unique repo in results (deduplicate API calls)
+- [ ] Score based on commits landed in the last 30 days
+- [ ] Decide on scoring tiers (e.g., 0 commits → 0 pts, 1-5 → 10, 5-20 → 18, 20+ → 25)
+- [ ] Handle API errors gracefully (default to neutral score if call fails)
+
+#### Description Quality (0–15 points) — uses `body`
+
+Light bonus for well-structured issues. Not a heavy signal — many great first issues have minimal descriptions.
+
+- [ ] Base points for body length (e.g., 100+ characters)
+- [ ] Bonus for markdown structure (headings, lists, checkboxes)
+- [ ] Bonus for code blocks/snippets
+- [ ] Bonus for links or issue references (`#123`, URLs)
+
+#### Availability — prerequisite filter, not scored
+
+- Not a scoring signal — handled by existing search filters (`no:assignee`, label filters)
+
+#### Scaffolding
+
+- [x] Create `scoreIssue()` function in `packages/core`
+- [x] Create `scoreFreshness()` with exponential decay
+- [ ] Create `scoreEngagement()` with repo commit activity
+- [ ] Create `scoreDescription()` with body/markdown analysis
+- [x] Wire scoring into CLI output (table display, sorting)
 
 ### CLI Integration
 
-- [ ] Sort by quality score by default (`--sort quality`)
+- [x] Sort by quality score by default
 - [ ] Support `--sort newest` and `--sort comments` alternatives
 - [ ] Show score in `--verbose` mode with per-signal breakdown
 - [ ] Add `--no-score` flag to skip quality scoring and return raw results
@@ -155,6 +181,7 @@ Rank issues by how likely they are to be a good contributor experience.
 - [ ] Handle network errors with clear messages
 - [ ] Validate `--limit` is a positive number; show clear error otherwise
 - [ ] Set explicit default `--limit` to 30 (currently implicit via GitHub API default)
+- [ ] Make sure that a language is set. If we fail to fetch the language repo that's a different story.
 
 ### Output Polish
 
