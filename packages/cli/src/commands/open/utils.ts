@@ -1,4 +1,4 @@
-import { IssueWithRepo, logger } from '@good-first-issue/core'
+import { IssueWithMetadata, logger } from '@good-first-issue/core'
 import fs from 'fs/promises'
 import os from 'node:os'
 
@@ -26,7 +26,7 @@ export function getIssue(content: unknown, issue: number) {
   return content[issue - 1]
 }
 
-export async function saveSearchResults(issues: IssueWithRepo[]) {
+export async function saveSearchResults(issues: IssueWithMetadata[]) {
   const urls = issues.map((i) => i.html_url)
   const filepath = getSearchResultsFilepath()
 

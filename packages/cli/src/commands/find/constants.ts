@@ -9,6 +9,7 @@ export const DEFAULT_LABELS = [
 ]
 
 export const COL_WIDTH = {
+  score: 6,
   issue: 6,
   repo: 30,
   language: 12,
