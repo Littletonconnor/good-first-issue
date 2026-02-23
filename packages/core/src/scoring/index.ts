@@ -1,7 +1,7 @@
 import { IssueWithRepoMetadata } from '../github/types.js'
 
 export function scoreIssue(issue: IssueWithRepoMetadata) {
-  return scoreFreshness(issue) + scoreEngagement() + scoreQuality()
+  return scoreFreshness(issue) + scoreEngagement() + scoreQuality(issue)
 }
 
 /**
@@ -34,6 +34,44 @@ function scoreEngagement() {
   return 25
 }
 
-function scoreQuality() {
-  return 15
+/**
+ * Scores an issue's description quality based on length and structure.
+ *
+ * Signals and point breakdown (max 15):
+ *  - Body length (300+ chars):     5 points
+ *  - Markdown structure (1 each):  4 points
+ *    - Headings (##, ###, etc.)
+ *    - Unordered lists (-, *)
+ *    - Checkboxes (- [ ], - [x])
+ *    - Numbered lists (1., 2., etc.)
+ *  - Code blocks (``` fences):     3 points
+ *  - References (#123, URLs):      3 points
+ *
+ * Returns 0 for missing or empty body.
+ *
+ * @returns A score between 0 and 15
+ */
+function scoreQuality(issue: IssueWithRepoMetadata) {
+  const HEADING_REGEXP = /^#{1,6}\s/m
+  const LIST_REGEXP = /^[-*]\s/m
+  const CHECKBOX_REGEXP = /^- \[[ x]\]/m
+  const CODE_BLOCK_REGEXP = /```/
+  const LINK_REGEXP = /#\d+/
+  const NUMBERED_LIST_REGEXP = /^\d+\.\s/m
+
+  let score = 0
+  const body = issue.body
+  if (!body) return 0
+
+  if (body.length >= 300) score += 5
+
+  if (HEADING_REGEXP.test(body)) score += 1
+  if (LIST_REGEXP.test(body)) score += 1
+  if (CHECKBOX_REGEXP.test(body)) score += 1
+  if (NUMBERED_LIST_REGEXP.test(body)) score += 1
+  if (CODE_BLOCK_REGEXP.test(body)) score += 3
+  if (LINK_REGEXP.test(body)) score += 3
+
+  console.log('SCORE', score)
+  return Math.min(15, score)
 }
