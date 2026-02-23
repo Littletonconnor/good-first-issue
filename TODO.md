@@ -120,10 +120,11 @@ Measures how active the repo is, not the issue itself. A repo with recent commit
 
 Light bonus for well-structured issues. Not a heavy signal — many great first issues have minimal descriptions.
 
-- [ ] Base points for body length (e.g., 100+ characters)
-- [ ] Bonus for markdown structure (headings, lists, checkboxes)
-- [ ] Bonus for code blocks/snippets
-- [ ] Bonus for links or issue references (`#123`, URLs)
+- [x] Base points for body length (e.g., 100+ characters)
+- [x] Bonus for markdown structure (headings, lists, checkboxes)
+- [x] Bonus for code blocks/snippets
+- [x] Bonus for links or issue references (`#123`, URLs)
+- [ ] Tier body length scoring (e.g., 100+ chars → 3 pts, 300+ chars → 5 pts) so shorter but present descriptions get partial credit
 
 #### Availability — prerequisite filter, not scored
 
@@ -134,7 +135,7 @@ Light bonus for well-structured issues. Not a heavy signal — many great first 
 - [x] Create `scoreIssue()` function in `packages/core`
 - [x] Create `scoreFreshness()` with exponential decay
 - [ ] Create `scoreEngagement()` with repo commit activity
-- [ ] Create `scoreDescription()` with body/markdown analysis
+- [x] Create `scoreDescription()` with body/markdown analysis
 - [x] Wire scoring into CLI output (table display, sorting)
 
 ### CLI Integration
@@ -143,6 +144,19 @@ Light bonus for well-structured issues. Not a heavy signal — many great first 
 - [ ] Support `--sort newest` and `--sort comments` alternatives
 - [ ] Show score in `--verbose` mode with per-signal breakdown
 - [ ] Add `--no-score` flag to skip quality scoring and return raw results
+
+---
+
+## Phase 4.5: Multi-Repo Search
+
+Search across a specific set of repos — useful for watching projects you care about.
+
+### `--repo` Multi-Value Support
+
+- [ ] Extend `--repo` flag to accept multiple values (e.g., `--repo facebook/react --repo vercel/next.js`)
+- [ ] Run parallel searches across all specified repos
+- [ ] Merge and deduplicate results, sort by quality score
+- [ ] Ensure `--repo` still works with a single value (backwards compatible)
 
 ---
 
@@ -238,6 +252,15 @@ These are not prioritized. Pick them up when the core is solid.
 - [ ] Walk users through the full contribution workflow: finding an issue, commenting to claim it, forking, branching, submitting a PR, and responding to review
 - [ ] Cover etiquette and best practices (e.g., ask before working on an issue, keep PRs focused, be patient with maintainers)
 - [ ] Explain how to read a CONTRIBUTING.md and what to look for in a repo before contributing
+
+### Watchlist (`watch` command)
+
+- [ ] `good-first-issue watch` subcommand that checks a saved list of repos for new good first issues
+- [ ] Store watchlist in config file (e.g., `~/.good-first-issue/watchlist.json`)
+- [ ] `watch --add facebook/react` / `watch --remove facebook/react` to manage the list
+- [ ] `watch --list` to show current watchlist
+- [ ] Optional: track previously seen issues so it can surface only *new* ones since last check
+- [ ] Optional: daily digest mode or integration with system notifications
 
 ### Multi-Platform
 
