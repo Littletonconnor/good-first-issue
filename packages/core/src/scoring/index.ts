@@ -72,6 +72,5 @@ function scoreQuality(issue: IssueWithRepoMetadata) {
   if (CODE_BLOCK_REGEXP.test(body)) score += 3
   if (LINK_REGEXP.test(body)) score += 3
 
-  console.log('SCORE', score)
   return Math.min(15, score)
 }
