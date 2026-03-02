@@ -18,6 +18,7 @@ export function buildSearchParams(cliFlags: CliFlags): IssueSearchParams {
   searchParams.noAssignee = true
   searchParams.language = determineLanguage(cliFlags)
   searchParams.labels = determineLabels(cliFlags)
+  searchParams.is = determineIs(cliFlags)
   if (cliFlags.org) searchParams.org = cliFlags.org
   if (cliFlags.assigned) searchParams.noAssignee = false
   if (cliFlags.repo) searchParams.repo = cliFlags.repo
@@ -57,6 +58,12 @@ export function determineLabels(cliFlags: CliFlags) {
   const labels = DEFAULT_LABELS
   if (cliFlags.labels) return [...labels, ...cliFlags.labels]
   return labels
+}
+
+export function determineIs(cliFlags: CliFlags) {
+  const defaults: Array<'open' | 'closed' | 'issue' | 'pr'> = ['open', 'issue']
+  if (!cliFlags.is) return defaults
+  return cliFlags.is
 }
 
 export async function fetchRepoDetails(client: GithubClient, items: GitHubIssue[]) {
