@@ -69,7 +69,7 @@ export type IssueSearchParams = {
   perPage?: number
   rawQuery?: string
   noAssignee?: boolean
-  is?: 'issue' | 'pr'
+  is?: string[]
 }
 
 export type RepoSearchParams = {

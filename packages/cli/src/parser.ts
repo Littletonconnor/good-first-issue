@@ -35,6 +35,10 @@ export function cli() {
         type: 'string',
         short: 'r',
       },
+      is: {
+        type: 'string',
+        multiple: true,
+      },
       sort: {
         type: 'string',
         short: 's',
