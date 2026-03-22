@@ -1,4 +1,4 @@
-import { logger, setVerbose } from '@good-first-issue/core'
+import { logger, setVerbose } from '@good-first-issue/utils'
 import { find } from './commands/find/index.js'
 import { open } from './commands/open/index.js'
 import { printHelpMessage, subcommandHelp } from './help.js'
@@ -25,7 +25,6 @@ export async function main(): Promise<void> {
       process.exit(0)
     }
 
-    // TODO: move to validate methods
     if (command === 'open' && !positionals[1]) {
       logger().error('Missing issue number. Usage: good-first-issue open <number>')
     }

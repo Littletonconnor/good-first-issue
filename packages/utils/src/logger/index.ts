@@ -1,4 +1,4 @@
-import { styleText } from 'node:util'
+import { color, TerminalColor } from '../terminal/index.js'
 
 export type VerboseLabel =
   | 'request'
@@ -17,16 +17,15 @@ export type VerboseLabel =
   | 'config'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
-type StyleColor = Parameters<typeof styleText>[0]
 
-const LOG_LEVEL_COLORS: Record<LogLevel, StyleColor> = {
+const LOG_LEVEL_COLORS = {
   debug: 'greenBright',
   info: 'greenBright',
   warn: 'yellowBright',
   error: 'redBright',
-}
+} satisfies Record<LogLevel, TerminalColor>
 
-const VERBOSE_LABEL_COLORS: Record<VerboseLabel, StyleColor> = {
+const VERBOSE_LABEL_COLORS = {
   request: 'cyanBright',
   response: 'greenBright',
   redirect: 'yellowBright',
@@ -41,7 +40,7 @@ const VERBOSE_LABEL_COLORS: Record<VerboseLabel, StyleColor> = {
   query: 'blueBright',
   timing: 'magentaBright',
   config: 'whiteBright',
-}
+} satisfies Record<VerboseLabel, TerminalColor>
 
 let verboseEnabled = false
 
@@ -62,9 +61,9 @@ export function isVerbose(): boolean {
 
 function formatLogMessage(level: LogLevel, args: string[]): string {
   const now = new Date().toISOString()
-  const coloredLevel = styleText(LOG_LEVEL_COLORS[level], level)
-  const time = styleText('gray', now)
-  const message = styleText('white', `[${coloredLevel}] ${args.join(' ')}`)
+  const coloredLevel = color(LOG_LEVEL_COLORS[level], level)
+  const time = color('gray', now)
+  const message = color('white', `[${coloredLevel}] ${args.join(' ')}`)
   return `${time} ${message}`
 }
 
@@ -82,9 +81,8 @@ export function logger() {
     verbose(label: VerboseLabel, message: string): void {
       if (!verboseEnabled) return
 
-      const color = VERBOSE_LABEL_COLORS[label]
-      const formattedLabel = styleText(color, `[${label}]`)
-      const formattedMessage = styleText('gray', message)
+      const formattedLabel = color(VERBOSE_LABEL_COLORS[label], `[${label}]`)
+      const formattedMessage = color('gray', message)
       console.log(`${formattedLabel} ${formattedMessage}`)
     },
 

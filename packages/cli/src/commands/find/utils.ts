@@ -1,17 +1,15 @@
+import { GithubClient, scoreIssue } from '@good-first-issue/core'
 import {
-  GithubClient,
   GitHubIssue,
   GithubRepository,
-  IssueWithMetadata,
   IssueSearchParams,
+  IssueWithMetadata,
   IssueWithRepoMetadata,
-  logger,
-  scoreIssue,
-} from '@good-first-issue/core'
+} from '@good-first-issue/types'
+import { logger } from '@good-first-issue/utils'
 import { readdirSync } from 'node:fs'
-import { styleText } from 'util'
 import { CliFlags } from '../../parser.js'
-import { DEFAULT_LABELS, EIGHT_WEEKS, ONE_WEEK } from './constants.js'
+import { DEFAULT_LABELS } from './constants.js'
 
 export function buildSearchParams(cliFlags: CliFlags): IssueSearchParams {
   const searchParams: IssueSearchParams = {}
@@ -178,16 +176,4 @@ export function formatAge(dateString: string): string {
   if (seconds < 2592000) return Math.floor(seconds / 604800) + 'w ago'
   if (seconds < 31536000) return Math.floor(seconds / 2592000) + 'mo ago'
   return Math.floor(seconds / 31536000) + 'y ago'
-}
-
-export function ageColor(dateString: string, text: string): string {
-  const elapsed = Date.now() - new Date(dateString).getTime()
-
-  if (elapsed < ONE_WEEK) {
-    return styleText('green', text)
-  } else if (elapsed < EIGHT_WEEKS) {
-    return styleText('yellow', text)
-  } else {
-    return styleText('red', text)
-  }
 }

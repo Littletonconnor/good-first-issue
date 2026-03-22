@@ -8,6 +8,5 @@
   "include": ["src"],
   "references": [
     { "path": "../types" },
-    { "path": "../utils" },
   ]
 }

@@ -1,5 +1,2 @@
 export * from './github/client.js'
-export * from './github/types.js'
-export * from './logger/index.js'
-export * from './result.js'
 export * from './scoring/index.js'
