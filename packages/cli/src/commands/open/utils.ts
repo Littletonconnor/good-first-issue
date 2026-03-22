@@ -1,4 +1,5 @@
-import { IssueWithMetadata, logger } from '@good-first-issue/core'
+import { IssueWithMetadata } from '@good-first-issue/types'
+import { logger } from '@good-first-issue/utils'
 import fs from 'fs/promises'
 import os from 'node:os'
 

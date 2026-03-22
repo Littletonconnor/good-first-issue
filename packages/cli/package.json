@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@good-first-issue/core": "workspace:*",
-    "@good-first-issue/types": "workspace:*"
+    "@good-first-issue/types": "workspace:*",
+    "@good-first-issue/utils": "workspace:*"
   }
 }

@@ -285,15 +285,15 @@ git push origin --delete fix/issue-description
 
 ## Quick Reference
 
-| Step | Action |
-| --- | --- |
-| Find an issue | `good-first-issue find --language <lang>` |
-| Claim it | Comment on the issue with your plan |
-| Fork & clone | Fork on GitHub, clone locally, add upstream remote |
-| Branch | `git checkout -b fix/description upstream/main` |
-| Code | Make focused changes, follow project style |
-| Test | Run the project's test suite locally |
-| Push | `git push origin fix/description` |
-| PR | Open PR referencing the issue, explain your changes |
-| Review | Respond to feedback, push updates |
-| Clean up | Delete branch after merge |
+| Step          | Action                                              |
+| ------------- | --------------------------------------------------- |
+| Find an issue | `good-first-issue find --language <lang>`           |
+| Claim it      | Comment on the issue with your plan                 |
+| Fork & clone  | Fork on GitHub, clone locally, add upstream remote  |
+| Branch        | `git checkout -b fix/description upstream/main`     |
+| Code          | Make focused changes, follow project style          |
+| Test          | Run the project's test suite locally                |
+| Push          | `git push origin fix/description`                   |
+| PR            | Open PR referencing the issue, explain your changes |
+| Review        | Respond to feedback, push updates                   |
+| Clean up      | Delete branch after merge                           |

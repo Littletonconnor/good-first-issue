@@ -1,4 +1,4 @@
-import { IssueSearchParams } from './types.js'
+import { IssueSearchParams } from '@good-first-issue/types'
 
 export function buildIssueQuery(params: IssueSearchParams) {
   const parts: string[] = []

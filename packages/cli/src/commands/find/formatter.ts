@@ -1,9 +1,16 @@
-import { styleText } from 'node:util'
+import {
+  ageColor,
+  color,
+  formatAge,
+  formatStars,
+  padEnd,
+  padStart,
+  sliceWidth,
+  truncate,
+} from '@good-first-issue/utils'
 import { CliFlags } from '../../parser.js'
-import { IssueWithMetadata } from '@good-first-issue/core'
 import { COL_WIDTH } from './constants.js'
-import { padEnd, padStart, truncate } from '../utils.js'
-import { ageColor, formatAge, formatStars, sliceWidth } from './utils.js'
+import { IssueWithMetadata } from '@good-first-issue/types'
 
 export function stdout(cliFlags: CliFlags, issues: IssueWithMetadata[]) {
   if (cliFlags.json) {
@@ -16,7 +23,7 @@ export function stdout(cliFlags: CliFlags, issues: IssueWithMetadata[]) {
 export function formatTable(issues: IssueWithMetadata[]) {
   const rows = issues.map((issue, i) => formatIssueRow(issue, i + 1))
 
-  const disclosure = styleText(
+  const disclosure = color(
     'dim',
     `Showing ${issues.length} issues. Run good-first-issue open <n> to open in browser.`,
   )
@@ -27,14 +34,14 @@ export function formatTable(issues: IssueWithMetadata[]) {
 function formatIssueRow(issue: IssueWithMetadata, index: number) {
   const repoName = issue.repository_url.split('/').slice(-2).join('/')
   return row([
-    styleText('cyan', padEnd(truncate(repoName, COL_WIDTH.repo), COL_WIDTH.repo)),
-    styleText(
+    color('cyan', padEnd(truncate(repoName, COL_WIDTH.repo), COL_WIDTH.repo)),
+    color(
       'dim',
       padEnd(sliceWidth(issue?.language ?? '-', COL_WIDTH.language), COL_WIDTH.language),
     ),
     padStart(formatStars(issue?.stargazers_count ?? 0), COL_WIDTH.stars),
-    styleText('dim', padStart(`${issue.score}`, COL_WIDTH.score)),
-    styleText('dim', padStart(`#${index}`, COL_WIDTH.issue)),
+    color('dim', padStart(`${issue.score}`, COL_WIDTH.score)),
+    color('dim', padStart(`#${index}`, COL_WIDTH.issue)),
     padEnd(truncate(issue.title, COL_WIDTH.title), COL_WIDTH.title),
     ageColor(issue.created_at, padStart(formatAge(issue.created_at), COL_WIDTH.age)),
     padStart(String(issue.comments), COL_WIDTH.comments),
@@ -43,14 +50,14 @@ function formatIssueRow(issue: IssueWithMetadata, index: number) {
 
 function headerRow(): string {
   return row([
-    styleText('bold', padEnd('Repo', COL_WIDTH.repo)),
-    styleText('bold', padEnd('Language', COL_WIDTH.language)),
-    styleText('bold', padStart('Stars', COL_WIDTH.stars)),
-    styleText('bold', padStart('Score', COL_WIDTH.score)),
-    styleText('bold', padStart('#', COL_WIDTH.issue)),
-    styleText('bold', padEnd('Title', COL_WIDTH.title)),
-    styleText('bold', padStart('Age', COL_WIDTH.age)),
-    styleText('bold', padStart('Comments', COL_WIDTH.comments)),
+    color('bold', padEnd('Repo', COL_WIDTH.repo)),
+    color('bold', padEnd('Language', COL_WIDTH.language)),
+    color('bold', padStart('Stars', COL_WIDTH.stars)),
+    color('bold', padStart('Score', COL_WIDTH.score)),
+    color('bold', padStart('#', COL_WIDTH.issue)),
+    color('bold', padEnd('Title', COL_WIDTH.title)),
+    color('bold', padStart('Age', COL_WIDTH.age)),
+    color('bold', padStart('Comments', COL_WIDTH.comments)),
   ])
 }
 

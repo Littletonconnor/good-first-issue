@@ -18,6 +18,3 @@ export const COL_WIDTH = {
   age: 7,
   comments: 8,
 }
-
-export const ONE_WEEK = 7 * 24 * 60 * 60 * 1000
-export const EIGHT_WEEKS = ONE_WEEK * 8

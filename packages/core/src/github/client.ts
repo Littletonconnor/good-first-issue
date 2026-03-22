@@ -1,5 +1,4 @@
-import { logger } from '../logger/index.js'
-import { err, ok, Result } from '../result.js'
+import { err, logger, ok, Result } from '@good-first-issue/utils'
 import { buildQuery } from './query-builder.js'
 import {
   GitHubError,
@@ -8,7 +7,7 @@ import {
   IssueSearchParams,
   RepoSearchParams,
   SearchResponse,
-} from './types.js'
+} from '@good-first-issue/types'
 
 type Config = {
   token?: string

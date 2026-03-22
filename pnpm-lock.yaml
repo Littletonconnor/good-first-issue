@@ -38,14 +38,26 @@ importers:
       '@good-first-issue/types':
         specifier: workspace:*
         version: link:../types
+      '@good-first-issue/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   packages/core:
     dependencies:
       '@good-first-issue/types':
         specifier: workspace:*
         version: link:../types
+      '@good-first-issue/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   packages/types: {}
+
+  packages/utils:
+    dependencies:
+      '@good-first-issue/types':
+        specifier: workspace:*
+        version: link:../types
 
 packages:
 

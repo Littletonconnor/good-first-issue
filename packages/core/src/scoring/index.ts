@@ -1,4 +1,4 @@
-import { IssueWithRepoMetadata } from '../github/types.js'
+import { IssueWithRepoMetadata } from '@good-first-issue/types'
 
 export function scoreIssue(issue: IssueWithRepoMetadata) {
   return scoreFreshness(issue) + scoreEngagement() + scoreQuality(issue)

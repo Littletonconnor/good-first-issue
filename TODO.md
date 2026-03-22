@@ -96,37 +96,37 @@ Reorganize the monorepo into a cleaner package architecture before building new 
 
 ### Create `@good-first-issue/utils` package
 
-- [ ] Scaffold `packages/utils` with `package.json`, `tsconfig.json` (composite, references `types`)
-- [ ] Move `Result<T, E>` and all utilities (`ok`, `err`, `unwrap`, `unwrapOr`, `map`, `flatMap`, `fromPromise`, `isOk`, `isErr`) from `core/src/result.ts` → `utils/src/result.ts`
-- [ ] Create `utils/src/terminal.ts` — extract ANSI/color helpers (wrap `node:util` styleText) that Logger and future `ui` package will share
-- [ ] Move Logger from `core/src/logger/index.ts` → `utils/src/logger.ts`, update to import from `./terminal`
-- [ ] Move string helpers (`padEnd`, `padStart`, `truncate`, `sliceWidth`, `isWide`, `isZeroWidth`) from `cli/src/commands/utils.ts` → `utils/src/string.ts`
-- [ ] Move `formatStars`, `formatAge` from `cli/src/commands/find/utils.ts` → `utils/src/string.ts` (these are generic formatters, not find-specific)
-- [ ] Create `utils/src/index.ts` with public exports
-- [ ] Verify `pnpm build` passes with the new package
+- [x] Scaffold `packages/utils` with `package.json`, `tsconfig.json` (composite, references `types`)
+- [x] Move `Result<T, E>` and all utilities (`ok`, `err`, `unwrap`, `unwrapOr`, `map`, `flatMap`, `fromPromise`, `isOk`, `isErr`) from `core/src/result.ts` → `utils/src/result.ts`
+- [x] Create `utils/src/terminal.ts` — extract ANSI/color helpers (wrap `node:util` styleText) that Logger and future `ui` package will share
+- [x] Move Logger from `core/src/logger/index.ts` → `utils/src/logger.ts`, update to import from `./terminal`
+- [x] Move string helpers (`padEnd`, `padStart`, `truncate`, `sliceWidth`, `isWide`, `isZeroWidth`) from `cli/src/commands/utils.ts` → `utils/src/string.ts`
+- [x] Move `formatStars`, `formatAge` from `cli/src/commands/find/utils.ts` → `utils/src/string.ts` (these are generic formatters, not find-specific)
+- [x] Create `utils/src/index.ts` with public exports
+- [x] Verify `pnpm build` passes with the new package
 
 ### Expand `@good-first-issue/types` package
 
-- [ ] Create `types/src/github/` directory
-- [ ] Move GitHub API response types (`GitHubIssue`, `GithubRepository`, `GitHubLabel`, `GitHubAssignee`, `GitHubPullRequest`, `SearchResponse`) from `core/src/github/types.ts` → `types/src/github/responses.ts`
-- [ ] Move GitHub API request types (`IssueSearchParams`, `RepoSearchParams`) from `core/src/github/types.ts` → `types/src/github/params.ts`
-- [ ] Move GitHub error types (`GitHubError` discriminated union) from `core/src/github/types.ts` → `types/src/github/errors.ts`
-- [ ] Move composed types (`IssueWithRepoMetadata`, `IssueWithMetadata`) from `core/src/github/types.ts` → `types/src/github/composed.ts`
-- [ ] Create `types/src/github/index.ts` barrel export
-- [ ] Update `types/src/index.ts` to re-export from `./github`
-- [ ] Delete `core/src/github/types.ts` once all consumers are updated
-- [ ] Verify `pnpm build` passes
+- [x] Create `types/src/github/` directory
+- [x] Move GitHub API response types (`GitHubIssue`, `GithubRepository`, `GitHubLabel`, `GitHubAssignee`, `GitHubPullRequest`, `SearchResponse`) from `core/src/github/types.ts` → `types/src/github/responses.ts`
+- [x] Move GitHub API request types (`IssueSearchParams`, `RepoSearchParams`) from `core/src/github/types.ts` → `types/src/github/params.ts`
+- [x] Move GitHub error types (`GitHubError` discriminated union) from `core/src/github/types.ts` → `types/src/github/errors.ts`
+- [x] Move composed types (`IssueWithRepoMetadata`, `IssueWithMetadata`) from `core/src/github/types.ts` → `types/src/github/composed.ts`
+- [x] Create `types/src/github/index.ts` barrel export
+- [x] Update `types/src/index.ts` to re-export from `./github`
+- [x] Delete `core/src/github/types.ts` once all consumers are updated
+- [x] Verify `pnpm build` passes
 
 ### Update `@good-first-issue/core` package
 
-- [ ] Update `tsconfig.json` references to include `utils`
-- [ ] Update `package.json` to depend on `@good-first-issue/utils`
-- [ ] Update `GithubClient` imports: types from `@good-first-issue/types`, Result from `@good-first-issue/utils`
-- [ ] Update `query-builder.ts` imports: types from `@good-first-issue/types`
-- [ ] Update `scoring/index.ts` imports: types from `@good-first-issue/types`
-- [ ] Remove `core/src/result.ts`, `core/src/logger/`, `core/src/github/types.ts`
-- [ ] Update `core/src/index.ts` — re-export Result and Logger from `@good-first-issue/utils` for backwards compat (temporary, remove once CLI is updated)
-- [ ] Verify `pnpm build` passes
+- [x] Update `tsconfig.json` references to include `utils`
+- [x] Update `package.json` to depend on `@good-first-issue/utils`
+- [x] Update `GithubClient` imports: types from `@good-first-issue/types`, Result from `@good-first-issue/utils`
+- [x] Update `query-builder.ts` imports: types from `@good-first-issue/types`
+- [x] Update `scoring/index.ts` imports: types from `@good-first-issue/types`
+- [x] Remove `core/src/result.ts`, `core/src/logger/`, `core/src/github/types.ts`
+- [x] Update `core/src/index.ts` — re-export Result and Logger from `@good-first-issue/utils` for backwards compat (temporary, remove once CLI is updated)
+- [x] Verify `pnpm build` passes
 
 ### Create `@good-first-issue/ui` package (empty shell)
 
@@ -456,7 +456,7 @@ These are not prioritized. Pick them up when the core is solid.
 - [ ] Store watchlist in config file (e.g., `~/.good-first-issue/watchlist.json`)
 - [ ] `watch --add facebook/react` / `watch --remove facebook/react` to manage the list
 - [ ] `watch --list` to show current watchlist
-- [ ] Optional: track previously seen issues so it can surface only *new* ones since last check
+- [ ] Optional: track previously seen issues so it can surface only _new_ ones since last check
 - [ ] Optional: daily digest mode or integration with system notifications
 
 ### Multi-Platform

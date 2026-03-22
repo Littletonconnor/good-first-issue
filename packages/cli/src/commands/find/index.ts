@@ -1,4 +1,5 @@
-import { GithubClient, logger } from '@good-first-issue/core'
+import { GithubClient } from '@good-first-issue/core'
+import { logger } from '@good-first-issue/utils'
 import { CliFlags } from '../../parser.js'
 import { saveSearchResults } from '../open/utils.js'
 import { stdout } from './formatter.js'
