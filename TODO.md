@@ -130,10 +130,10 @@ Reorganize the monorepo into a cleaner package architecture before building new 
 
 ### Create `@good-first-issue/ui` package (empty shell)
 
-- [ ] Scaffold `packages/ui` with `package.json`, `tsconfig.json` (composite, references `types` and `utils`)
-- [ ] Create `ui/src/index.ts` with placeholder export (e.g., `export {}`)
-- [ ] Add to root `tsconfig.json` references
-- [ ] Verify `pnpm build` passes
+- [x] Scaffold `packages/ui` with `package.json`, `tsconfig.json` (composite, references `types` and `utils`)
+- [x] Create `ui/src/index.ts` with placeholder export (e.g., `export {}`)
+- [x] Add to root `tsconfig.json` references
+- [x] Verify `pnpm build` passes
 
 ### Update `@good-first-issue/cli` package
 
