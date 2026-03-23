@@ -8,7 +8,6 @@
   "include": ["src"],
   "references": [
     { "path": "../types" },
-    { "path": "../ui" },
-    { "path": "../core" }
+    { "path": "../utils" },
   ]
 }
