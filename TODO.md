@@ -137,16 +137,16 @@ Reorganize the monorepo into a cleaner package architecture before building new 
 
 ### Update `@good-first-issue/cli` package
 
-- [ ] Update `tsconfig.json` references to include `utils` and `ui`
-- [ ] Update `package.json` to depend on `@good-first-issue/utils` and `@good-first-issue/ui`
-- [ ] Update all imports in `commands/find/` — types from `@good-first-issue/types`, string helpers and logger from `@good-first-issue/utils`
-- [ ] Update all imports in `commands/open/` — Result from `@good-first-issue/utils`
-- [ ] Remove `cli/src/commands/utils.ts` once helpers are migrated
-- [ ] Remove re-exports from `core/src/index.ts` backwards compat shim (added earlier)
-- [ ] Verify `pnpm build` passes
-- [ ] Verify `pnpm test` passes
-- [ ] Verify `pnpm cli -- --help` works
-- [ ] Verify `pnpm cli -- find --language typescript` works end-to-end
+- [x] Update `tsconfig.json` references to include `utils` and `ui`
+- [x] Update `package.json` to depend on `@good-first-issue/utils` and `@good-first-issue/ui`
+- [x] Update all imports in `commands/find/` — types from `@good-first-issue/types`, string helpers and logger from `@good-first-issue/utils`
+- [x] Update all imports in `commands/open/` — Result from `@good-first-issue/utils`
+- [x] Remove `cli/src/commands/utils.ts` once helpers are migrated
+- [x] Remove re-exports from `core/src/index.ts` backwards compat shim (added earlier)
+- [x] Verify `pnpm build` passes
+- [x] Verify `pnpm test` passes
+- [x] Verify `pnpm cli -- --help` works
+- [x] Verify `pnpm cli -- find --language typescript` works end-to-end
 
 ### Wrap system boundaries with Result
 
